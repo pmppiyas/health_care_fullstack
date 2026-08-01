@@ -1,11 +1,11 @@
 import mongoose from "mongoose"
 import bcrypt from "bcrypt"
-
 import User from "@/app/api/user/user.model"
 import Admin from "@/app/api/admin/admin.model"
-
 import { ENV } from "@/config/env.config"
 import { Role } from "@/app/api/user/user.interface"
+import { AppError } from "@/lib/error/AppError"
+import { StatusCodes } from "http-status-codes"
 
 const seedAdmin = async () => {
   try {
@@ -22,7 +22,10 @@ const seedAdmin = async () => {
       }).session(session)
 
       if (existingUser) {
-        throw new Error(`Admin user already exists: ${ENV.ADMIN_EMAIL}`)
+        throw new AppError(
+          StatusCodes.CONFLICT,
+          `Admin user already exists: ${ENV.ADMIN_EMAIL}`
+        )
       }
 
       const hashedPassword = await bcrypt.hash(ENV.ADMIN_PASS, ENV.SALT_ROUND)
@@ -61,7 +64,11 @@ const seedAdmin = async () => {
 
     console.log("✅ Super Admin Created Successfully")
   } catch (error) {
-    console.error("❌ Seed Error:", error)
+    if (error instanceof AppError) {
+      console.error(`❌ ${error.message}`)
+    } else {
+      console.error("❌ Unexpected Seed Error:", error)
+    }
 
     process.exitCode = 1
   } finally {
