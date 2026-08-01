@@ -122,6 +122,6 @@ doctorSchema.virtual("patientCount").get(function () {
 })
 
 const Doctor: Model<IDoctor> =
-  models.Doctor ?? model<IDoctor>("Doctor", doctorSchema)
+  mongoose.models.Doctor ?? mongoose.model<IDoctor>("Doctor", doctorSchema)
 
 export default Doctor

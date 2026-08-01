@@ -1,4 +1,4 @@
-import mongoose, { Schema, model, models, Model } from "mongoose"
+import mongoose, { Schema, Model } from "mongoose"
 import { IAdmin, AdminPermission } from "./admin.interface"
 
 const adminSchema = new Schema<IAdmin>(
@@ -73,8 +73,6 @@ const adminSchema = new Schema<IAdmin>(
   }
 )
 
-adminSchema.index({ userId: 1 })
-adminSchema.index({ email: 1 })
 adminSchema.index({ isSuperAdmin: 1 })
 
 adminSchema.pre("save", function (next) {
@@ -83,6 +81,7 @@ adminSchema.pre("save", function (next) {
   }
 })
 
-const Admin: Model<IAdmin> = models.Admin ?? model<IAdmin>("Admin", adminSchema)
+const Admin: Model<IAdmin> =
+  mongoose.models.Admin ?? mongoose.model<IAdmin>("Admin", adminSchema)
 
 export default Admin

@@ -1,4 +1,4 @@
-import mongoose, { Schema, model, models, Model } from "mongoose"
+import mongoose, { Schema, Model } from "mongoose"
 import { IUser, Role } from "./user.interface"
 
 const userSchema = new Schema<IUser>(
@@ -75,7 +75,6 @@ const userSchema = new Schema<IUser>(
   }
 )
 
-userSchema.index({ email: 1 })
 userSchema.index({ role: 1 })
 userSchema.index({ adminId: 1 }, { sparse: true })
 userSchema.index({ doctorId: 1 }, { sparse: true })
@@ -97,6 +96,7 @@ userSchema.pre("save", async function () {
   }
 })
 
-const User: Model<IUser> = models.User ?? model<IUser>("User", userSchema)
+const User: Model<IUser> =
+  mongoose.models.User || mongoose.model<IUser>("User", userSchema)
 
 export default User
