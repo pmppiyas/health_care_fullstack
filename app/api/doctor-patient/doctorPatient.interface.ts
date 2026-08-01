@@ -3,7 +3,7 @@ import { Types } from "mongoose"
 export enum DoctorPatientRelationship {
   PRIMARY = "Primary",
   SECONDARY = "Secondary",
-  CONSULTING = "Consulting",
+  CONSULTANT = "Consultant",
 }
 
 export interface IDoctorPatient {

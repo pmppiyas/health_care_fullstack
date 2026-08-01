@@ -1,5 +1,4 @@
 import { z } from "zod"
-
 import { DoctorPatientRelationship } from "./doctorPatient.interface"
 
 const mongoIdSchema = z
@@ -9,17 +8,15 @@ const mongoIdSchema = z
 export const createDoctorPatientSchema = z.object({
   patientId: mongoIdSchema,
 
-  relationship: z
-    .enum(Object.values(DoctorPatientRelationship) as [string, ...string[]])
-    .default(DoctorPatientRelationship.CONSULTING),
+  relationship: z.nativeEnum(DoctorPatientRelationship, {
+    required_error: "Relationship is required",
+  }),
 
   assignedAt: z.coerce.date().optional(),
 })
 
 export const updateDoctorPatientSchema = z.object({
-  relationship: z.enum(
-    Object.values(DoctorPatientRelationship) as [string, ...string[]]
-  ),
+  relationship: z.nativeEnum(DoctorPatientRelationship).optional(),
 })
 
 export type CreateDoctorPatientInput = z.infer<typeof createDoctorPatientSchema>
