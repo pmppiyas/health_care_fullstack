@@ -70,6 +70,7 @@ const adminSchema = new Schema<IAdmin>(
     timestamps: true,
     toJSON: { virtuals: true },
     toObject: { virtuals: true },
+    versionKey: false,
   }
 )
 

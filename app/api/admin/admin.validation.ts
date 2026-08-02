@@ -18,18 +18,16 @@ const photoUrlSchema = z
   .optional()
 
 export const createAdminSchema = z.object({
-  userId: mongoIdSchema.describe(
-    "ObjectId of the User account with role ADMIN"
-  ),
+  userId: mongoIdSchema,
 
   name: z
-    .string({ required_error: "Admin name is required" })
+    .string()
     .trim()
     .min(2, "Name must be at least 2 characters")
     .max(100, "Name must not exceed 100 characters"),
 
   email: z
-    .string({ required_error: "Email is required" })
+    .string()
     .trim()
     .toLowerCase()
     .email("Please provide a valid email address"),
@@ -45,11 +43,7 @@ export const createAdminSchema = z.object({
     .optional(),
 
   permissions: z
-    .array(
-      z.enum(Object.values(AdminPermission) as [string, ...string[]], {
-        message: `Each permission must be one of: ${Object.values(AdminPermission).join(", ")}`,
-      })
-    )
+    .array(z.nativeEnum(AdminPermission))
     .min(1, "Admin must have at least one permission")
     .default([AdminPermission.VIEW_REPORTS]),
 
@@ -61,14 +55,15 @@ export const updateAdminSchema = createAdminSchema
   .partial()
 
 export const grantPermissionSchema = z.object({
-  permission: z.enum(Object.values(AdminPermission) as [string, ...string[]], {
-    message: `Permission must be one of: ${Object.values(AdminPermission).join(", ")}`,
-  }),
+  permission: z.nativeEnum(AdminPermission),
 })
 
 export const revokePermissionSchema = grantPermissionSchema
 
 export type CreateAdminInput = z.infer<typeof createAdminSchema>
+
 export type UpdateAdminInput = z.infer<typeof updateAdminSchema>
+
 export type GrantPermissionInput = z.infer<typeof grantPermissionSchema>
+
 export type RevokePermissionInput = z.infer<typeof revokePermissionSchema>

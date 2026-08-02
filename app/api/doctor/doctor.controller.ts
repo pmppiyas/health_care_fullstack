@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server"
-import { CreateDoctorInput, updateDoctorSchema } from "./doctor.validation"
+import { CreateDoctorInput, UpdateDoctorInput } from "./doctor.validation"
 import { sendResponse } from "@/lib/utils/sendResponse"
 import { DoctorService } from "@/app/api/doctor/doctor.services"
 import { StatusCodes } from "http-status-codes"
@@ -43,12 +43,12 @@ const getDoctorById = async (req: NextRequest, doctorId: string) => {
   })
 }
 
-const updateDoctor = async (req: NextRequest, doctorId: string) => {
-  const body = await req.json()
-
-  const payload = updateDoctorSchema.parse(body)
-
-  const doctor = await DoctorService.updateDoctor(doctorId, payload)
+const updateDoctor = async (
+  doctorId: string,
+  data: UpdateDoctorInput,
+  user: AuthUser
+) => {
+  const doctor = await DoctorService.updateDoctor(doctorId, data)
 
   return sendResponse({
     statusCode: StatusCodes.OK,

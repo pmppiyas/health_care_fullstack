@@ -108,6 +108,7 @@ const doctorSchema = new Schema<IDoctor>(
     timestamps: true,
     toJSON: { virtuals: true },
     toObject: { virtuals: true },
+    versionKey: false,
   }
 )
 

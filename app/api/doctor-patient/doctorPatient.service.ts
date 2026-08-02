@@ -7,6 +7,7 @@ import {
   UpdateDoctorPatientInput,
 } from "./doctorPatient.validation"
 import { AppError } from "@/lib/error/AppError"
+import { NextRequest } from "next/server"
 
 const assignPatientToDoctor = async (
   doctorId: string,
@@ -142,10 +143,63 @@ const removePatientFromDoctor = async (doctorId: string, patientId: string) => {
   return assignment
 }
 
+const getAllAssignments = async (req: NextRequest) => {
+  const searchParams = req.nextUrl.searchParams
+  const page = Math.max(Number(searchParams.get("page") ?? "1"), 1)
+  const limit = Math.min(Math.max(Number(searchParams.get("limit") ?? "10"), 1), 100)
+  const skip = (page - 1) * limit
+
+  const [assignments, total] = await Promise.all([
+    DoctorPatient.find()
+      .populate({ path: "doctorId", select: "name specialization hospital" })
+      .populate({ path: "patientId", select: "name condition status" })
+      .sort({ assignedAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .lean(),
+    DoctorPatient.countDocuments(),
+  ])
+
+  return {
+    assignments,
+    meta: {
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    },
+  }
+}
+
+const getAssignmentById = async (assignmentId: string) => {
+  const assignment = await DoctorPatient.findById(assignmentId)
+    .populate({ path: "doctorId", select: "name specialization hospital phone email" })
+    .populate({ path: "patientId", select: "name condition status phone email" })
+
+  if (!assignment) {
+    throw new AppError(404, "Doctor-patient assignment not found")
+  }
+
+  return assignment
+}
+
+const deleteAssignment = async (assignmentId: string) => {
+  const assignment = await DoctorPatient.findByIdAndDelete(assignmentId)
+
+  if (!assignment) {
+    throw new AppError(404, "Doctor-patient assignment not found")
+  }
+
+  return assignment
+}
+
 export const DoctorPatientService = {
   assignPatientToDoctor,
   getPatientsByDoctor,
   getDoctorsByPatient,
   updateDoctorPatient,
   removePatientFromDoctor,
+  getAllAssignments,
+  getAssignmentById,
+  deleteAssignment,
 }

@@ -1,27 +1,12 @@
-import { withAuth } from "@/middleware/withAuth"
 import { withAuthAndValidation } from "@/middleware/withAuthAndValidation"
-import { Role } from "@/app/api/user/user.interface"
 import {
   UpdateDoctorPatientInput,
   updateDoctorPatientSchema,
 } from "@/app/api/doctor-patient/doctorPatient.validation"
+import { Role } from "@/app/api/user/user.interface"
 import { DoctorPatientService } from "@/app/api/doctor-patient/doctorPatient.service"
 import { sendResponse } from "@/lib/utils/sendResponse"
 import { StatusCodes } from "http-status-codes"
-
-export const GET = withAuth(
-  Role.ADMIN,
-  Role.DOCTOR
-)(async (req, context, user) => {
-  const { assignmentId } = await context.params
-  const assignment = await DoctorPatientService.getAssignmentById(assignmentId)
-  return sendResponse({
-    statusCode: StatusCodes.OK,
-    success: true,
-    message: "Assignment retrieved successfully",
-    data: assignment,
-  })
-})
 
 export const PATCH = withAuthAndValidation(
   updateDoctorPatientSchema,
@@ -40,13 +25,3 @@ export const PATCH = withAuthAndValidation(
     })
   }
 )
-
-export const DELETE = withAuth(Role.ADMIN)(async (req, context, user) => {
-  const { assignmentId } = await context.params
-  await DoctorPatientService.deleteAssignment(assignmentId)
-  return sendResponse({
-    statusCode: StatusCodes.OK,
-    success: true,
-    message: "Assignment deleted successfully",
-  })
-})

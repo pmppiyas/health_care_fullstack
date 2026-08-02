@@ -1,7 +1,7 @@
 import { Role } from "@/app/api/user/user.interface"
 
 export interface AuthUser {
-  userId: string
+  id: string
   role: Role
   email: string
 }

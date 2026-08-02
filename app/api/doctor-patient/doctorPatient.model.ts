@@ -26,7 +26,7 @@ const doctorPatientSchema = new Schema<IDoctorPatient>(
           DoctorPatientRelationship
         ).join(", ")}`,
       },
-      default: DoctorPatientRelationship.CONSULTING,
+      default: DoctorPatientRelationship.CONSULTANT,
       required: [true, "Relationship is required"],
     },
 
@@ -38,6 +38,7 @@ const doctorPatientSchema = new Schema<IDoctorPatient>(
   },
   {
     timestamps: true,
+    versionKey: false,
   }
 )
 

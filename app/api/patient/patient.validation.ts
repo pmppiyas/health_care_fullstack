@@ -46,11 +46,7 @@ const basePatientSchemaObject = z.object({
     message: `Gender must be one of: ${Object.values(Gender).join(", ")}`,
   }),
 
-  bloodGroup: z
-    .enum(Object.values(BloodGroup) as [string, ...string[]], {
-      message: `Blood group must be one of: ${Object.values(BloodGroup).join(", ")}`,
-    })
-    .optional(),
+bloodGroup: z.nativeEnum(BloodGroup).optional(),
 
   phone: phoneSchema.optional(),
 

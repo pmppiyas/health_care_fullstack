@@ -49,7 +49,7 @@ export function withAuth(...allowedRoles: Role[]) {
           ENV.JWT_ACCESS_TOKEN
         ) as AuthUser
 
-        if (!verifiedToken?.userId || !verifiedToken?.role) {
+        if (!verifiedToken?.id || !verifiedToken?.role) {
           return NextResponse.json(
             {
               success: false,
@@ -69,7 +69,7 @@ export function withAuth(...allowedRoles: Role[]) {
           )
         }
 
-        if (!Types.ObjectId.isValid(verifiedToken.userId)) {
+        if (!Types.ObjectId.isValid(verifiedToken.id)) {
           return NextResponse.json(
             {
               success: false,
@@ -79,7 +79,7 @@ export function withAuth(...allowedRoles: Role[]) {
           )
         }
 
-        const user = await User.findById(verifiedToken.userId)
+        const user = await User.findById(verifiedToken.id)
 
         if (!user) {
           return NextResponse.json(

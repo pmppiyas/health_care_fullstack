@@ -26,8 +26,9 @@ const loginUser = async (data: LoginInput) => {
   }
 
   const accessToken = createAccessToken({
-    userId: user._id.toString(),
+    id: user._id.toString(),
     role: user.role,
+    email: user.email,
   })
 
   return {

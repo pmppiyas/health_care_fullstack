@@ -1,5 +1,5 @@
 import { z } from "zod"
-import { Role } from "./user.interface"
+import { Role, UserStatus } from "./user.interface"
 
 const mongoIdSchema = z
   .string()
@@ -103,3 +103,9 @@ export type CreateUserInput = z.infer<typeof createUserSchema>
 export type UpdateUserInput = z.infer<typeof updateUserSchema>
 export type LinkDoctorInput = z.infer<typeof linkDoctorSchema>
 export type LinkPatientInput = z.infer<typeof linkPatientSchema>
+
+export const updateUserStatusSchema = z.object({
+  status: z.nativeEnum(UserStatus),
+})
+
+export type UpdateUserStatusInput = z.infer<typeof updateUserStatusSchema>

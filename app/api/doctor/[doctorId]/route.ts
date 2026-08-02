@@ -1,69 +1,30 @@
-import { NextRequest } from "next/server"
-import { connectDB } from "@/config/db.config"
-import { sendResponse } from "@/lib/utils/sendResponse"
+import { withAuth } from "@/middleware/withAuth"
+import { withAuthAndValidation } from "@/middleware/withAuthAndValidation"
+import { Role } from "@/app/api/user/user.interface"
 import {
-  deleteDoctor,
-  getDoctorById,
-  updateDoctor,
-} from "@/app/api/doctor/doctor.controller"
-import { handleError } from "@/lib/error/handleError"
+  UpdateDoctorInput,
+  updateDoctorSchema,
+} from "@/app/api/doctor/doctor.validation"
+import { DoctorController } from "@/app/api/doctor/doctor.controller"
 
-interface Context {
-  params: Promise<{
-    doctorId: string
-  }>
-}
+export const GET = withAuth(
+  Role.ADMIN,
+  Role.DOCTOR
+)(async (req, context, user) => {
+  const { doctorId } = await context.params
+  return await DoctorController.getDoctorById(req, doctorId)
+})
 
-export async function GET(req: NextRequest, context: Context) {
-  try {
-    await connectDB()
-
+export const PATCH = withAuthAndValidation(
+  updateDoctorSchema,
+  [Role.ADMIN],
+  async (req, context, user, data: UpdateDoctorInput) => {
     const { doctorId } = await context.params
-
-    return await getDoctorById(req, doctorId)
-  } catch (error) {
-    const handledError = handleError(error)
-
-    return sendResponse({
-      statusCode: handledError.statusCode,
-      success: false,
-      message: handledError.message,
-    })
+    return await DoctorController.updateDoctor(doctorId, data, user)
   }
-}
+)
 
-export async function PATCH(req: NextRequest, context: Context) {
-  try {
-    await connectDB()
-
-    const { doctorId } = await context.params
-
-    return await updateDoctor(req, doctorId)
-  } catch (error) {
-    const handledError = handleError(error)
-
-    return sendResponse({
-      statusCode: handledError.statusCode,
-      success: false,
-      message: handledError.message,
-    })
-  }
-}
-
-export async function DELETE(req: NextRequest, context: Context) {
-  try {
-    await connectDB()
-
-    const { doctorId } = await context.params
-
-    return await deleteDoctor(req, doctorId)
-  } catch (error) {
-    const handledError = handleError(error)
-
-    return sendResponse({
-      statusCode: handledError.statusCode,
-      success: false,
-      message: handledError.message,
-    })
-  }
-}
+export const DELETE = withAuth(Role.ADMIN)(async (req, context, user) => {
+  const { doctorId } = await context.params
+  return await DoctorController.deleteDoctor(req, doctorId)
+})

@@ -1,9 +1,69 @@
 import { Types } from "mongoose"
 
+// export enum Gender {
+//   MALE = "Male",
+//   FEMALE = "Female",
+//   OTHER = "Other",
+// }
+
+// export enum BloodGroup {
+//   A_POSITIVE = "A+",
+//   A_NEGATIVE = "A-",
+//   B_POSITIVE = "B+",
+//   B_NEGATIVE = "B-",
+//   AB_POSITIVE = "AB+",
+//   AB_NEGATIVE = "AB-",
+//   O_POSITIVE = "O+",
+//   O_NEGATIVE = "O-",
+// }
+
+// export enum PatientStatus {
+//   ACTIVE = "Active",
+//   DISCHARGED = "Discharged",
+//   CRITICAL = "Critical",
+//   RECOVERED = "Recovered",
+//   UNDER_OBSERVATION = "Under Observation",
+// }
+
+// export interface IEmergencyContact {
+//   name: string
+//   relationship: string
+//   phone: string
+// }
+
+// export interface IPatient {
+//   userId: Types.ObjectId | string
+
+//   name: string
+//   age: number
+//   gender: Gender
+//   bloodGroup?: BloodGroup
+
+//   phone?: string
+//   email?: string
+//   address?: string
+
+//   condition: string
+//   diagnosis?: string
+//   allergies?: string[]
+//   currentMedications?: string[]
+//   status: PatientStatus
+//   admissionDate: Date
+//   dischargeDate?: Date
+//   emergencyContact?: IEmergencyContact
+
+//   doctorIds: Array<Types.ObjectId | string>
+
+//   photoUrl?: string | null
+
+//   createdAt?: Date
+//   updatedAt?: Date
+// }
+
 export enum Gender {
-  MALE = "Male",
-  FEMALE = "Female",
-  OTHER = "Other",
+  MALE = "MALE",
+  FEMALE = "FEMALE",
+  OTHER = "OTHER",
 }
 
 export enum BloodGroup {
@@ -18,11 +78,9 @@ export enum BloodGroup {
 }
 
 export enum PatientStatus {
-  ACTIVE = "Active",
-  DISCHARGED = "Discharged",
-  CRITICAL = "Critical",
-  RECOVERED = "Recovered",
-  UNDER_OBSERVATION = "Under Observation",
+  ACTIVE = "ACTIVE",
+  INACTIVE = "INACTIVE",
+  DISCHARGED = "DISCHARGED",
 }
 
 export interface IEmergencyContact {
@@ -32,32 +90,24 @@ export interface IEmergencyContact {
 }
 
 export interface IPatient {
-  userId: Types.ObjectId | string
-
+  userId: Types.ObjectId
   name: string
   age: number
   gender: Gender
   bloodGroup?: BloodGroup
-
   phone?: string
   email?: string
   address?: string
-
   condition: string
   diagnosis?: string
-  allergies?: string[]
-  currentMedications?: string[]
+  allergies: string[]
+  currentMedications: string[]
   status: PatientStatus
   admissionDate: Date
   dischargeDate?: Date
   emergencyContact?: IEmergencyContact
-
-  doctorIds: Array<Types.ObjectId | string>
-
+  doctorIds: Types.ObjectId[]
   photoUrl?: string | null
-
-  createdAt?: Date
-  updatedAt?: Date
 }
 
 export type IPatientCreateInput = Omit<
