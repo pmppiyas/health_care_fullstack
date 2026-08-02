@@ -1,5 +1,5 @@
 import mongoose, { Schema, Model } from "mongoose"
-import { IUser, Role } from "./user.interface"
+import { IUser, Role, UserStatus } from "./user.interface"
 
 const userSchema = new Schema<IUser>(
   {
@@ -63,9 +63,10 @@ const userSchema = new Schema<IUser>(
       default: null,
     },
 
-    isActive: {
-      type: Boolean,
-      default: true,
+    status: {
+      type: String,
+      enum: Object.values(UserStatus),
+      default: UserStatus.ACTIVE,
     },
   },
   {

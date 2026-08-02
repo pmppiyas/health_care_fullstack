@@ -76,7 +76,7 @@ export const updateUserSchema = z
       )
       .optional(),
 
-    isActive: z.boolean().optional(),
+    status: z.boolean().optional(),
 
     photoUrl: z
       .string()

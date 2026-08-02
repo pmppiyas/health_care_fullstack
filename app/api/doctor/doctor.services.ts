@@ -1,8 +1,9 @@
 import { AppError } from "@/lib/error/AppError"
 import Doctor from "./doctor.model"
 import { CreateDoctorInput, UpdateDoctorInput } from "./doctor.validation"
+import { AuthUser } from "@/interfaces/auth.interface"
 
-const createDoctor = async (payload: CreateDoctorInput) => {
+const createDoctor = async (payload: CreateDoctorInput, user: AuthUser) => {
   const existingDoctor = await Doctor.findOne({
     $or: [{ email: payload.email }, { licenseNumber: payload.licenseNumber }],
   })

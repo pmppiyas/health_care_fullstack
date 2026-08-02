@@ -1,37 +1,21 @@
-import { NextRequest } from "next/server"
-import { connectDB } from "@/config/db.config"
-import { createDoctor, getAllDoctors } from "./doctor.controller"
-import { sendResponse } from "@/lib/utils/sendResponse"
-import { handleError } from "@/lib/error/handleError"
+import { withAuth } from "@/middleware/withAuth"
+import { CreateDoctorInput, createDoctorSchema } from "./doctor.validation"
+import { Role } from "@/app/api/user/user.interface"
+import { withAuthAndValidation } from "@/middleware/withAuthAndValidation"
+import { DoctorController } from "@/app/api/doctor/doctor.controller"
 
-export async function POST(req: NextRequest) {
-  try {
-    await connectDB()
-
-    return await createDoctor(req)
-  } catch (error) {
-    const handledError = handleError(error)
-
-    return sendResponse({
-      statusCode: handledError.statusCode,
-      success: false,
-      message: handledError.message,
-    })
+export const POST = withAuthAndValidation(
+  createDoctorSchema,
+  [Role.ADMIN],
+  async (req, context, user, data: CreateDoctorInput) => {
+    return await DoctorController.createDoctor(data, user)
   }
-}
+)
 
-export async function GET(req: NextRequest) {
-  try {
-    await connectDB()
-
-    return await getAllDoctors(req)
-  } catch (error) {
-    const handledError = handleError(error)
-
-    return sendResponse({
-      statusCode: handledError.statusCode,
-      success: false,
-      message: handledError.message,
-    })
-  }
-}
+export const GET = withAuth(...Object.values(Role))(async (
+  req,
+  context,
+  user
+) => {
+  return await DoctorController.getAllDoctors(req)
+})

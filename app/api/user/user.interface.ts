@@ -1,5 +1,11 @@
 import { Types } from "mongoose"
 
+export enum UserStatus {
+  ACTIVE = "ACTIVE",
+  INACTIVE = "INACTIVE",
+  BLOCKED = "BLOCKED",
+}
+
 export enum Role {
   ADMIN = "ADMIN",
   DOCTOR = "DOCTOR",
@@ -17,7 +23,7 @@ export interface IUser {
   doctorId?: Types.ObjectId | string | null
   patientId?: Types.ObjectId | string | null
 
-  isActive: boolean
+  status: UserStatus
   createdAt?: Date
   updatedAt?: Date
 }
@@ -28,5 +34,5 @@ export type IUserCreateInput = Pick<
 >
 
 export type IUserUpdateInput = Partial<
-  Pick<IUser, "name" | "email" | "password" | "isActive">
+  Pick<IUser, "name" | "email" | "password" | "status">
 >

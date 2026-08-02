@@ -1,11 +1,11 @@
 import mongoose from "mongoose"
-import bcrypt from "bcrypt"
 import User from "@/app/api/user/user.model"
 import Admin from "@/app/api/admin/admin.model"
 import { ENV } from "@/config/env.config"
-import { Role } from "@/app/api/user/user.interface"
+import { Role, UserStatus } from "@/app/api/user/user.interface"
 import { AppError } from "@/lib/error/AppError"
 import { StatusCodes } from "http-status-codes"
+import { hashPassword } from "@/lib/auth/password"
 
 const seedAdmin = async () => {
   try {
@@ -28,7 +28,7 @@ const seedAdmin = async () => {
         )
       }
 
-      const hashedPassword = await bcrypt.hash(ENV.ADMIN_PASS, ENV.SALT_ROUND)
+      const hashedPassword = await hashPassword(ENV.ADMIN_PASS)
 
       const [user] = await User.create(
         [
@@ -37,7 +37,7 @@ const seedAdmin = async () => {
             email: ENV.ADMIN_EMAIL,
             password: hashedPassword,
             role: Role.ADMIN,
-            isActive: true,
+            status: UserStatus.ACTIVE,
           },
         ],
         { session }

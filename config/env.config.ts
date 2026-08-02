@@ -2,6 +2,10 @@ import "dotenv/config"
 import { z } from "zod"
 
 const envSchema = z.object({
+  NODE_ENV: z
+    .enum(["development", "production", "test"])
+    .default("development"),
+
   MONGODB_URI: z.string().min(1, "MONGODB_URI is required"),
 
   ADMIN_EMAIL: z.string().email("Invalid admin email"),
@@ -13,9 +17,8 @@ const envSchema = z.object({
     .transform((value) => Number(value))
     .refine((value) => !Number.isNaN(value), "SALT_ROUND must be a number"),
 
-  NODE_ENV: z
-    .enum(["development", "production", "test"])
-    .default("development"),
+  JWT_ACCESS_TOKEN: z.string().min(1, "JWT_ACCESS_TOKEN is required"),
+  JWT_ACCESS_EXPIRED: z.string().min(1, "JWT_ACCESS_EXPIRED is required"),
 })
 
 export const ENV = envSchema.parse({
@@ -24,4 +27,6 @@ export const ENV = envSchema.parse({
   ADMIN_EMAIL: process.env.ADMIN_EMAIL,
   ADMIN_PASS: process.env.ADMIN_PASS,
   SALT_ROUND: process.env.SALT_ROUND,
+  JWT_ACCESS_TOKEN: process.env.JWT_ACCESS_TOKEN,
+  JWT_ACCESS_EXPIRED: process.env.JWT_ACCESS_EXPIRED,
 })
