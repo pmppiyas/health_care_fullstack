@@ -7,14 +7,14 @@ import { StatsSection } from "@/components/home/StatsSection"
 
 const page = () => {
   return (
-    <div>
+    <main>
       <HeroSection />
       <StatsSection />
       <FeatureSection />
       <HowItWorks />
       <AnalyticsPreview />
       <CTASection />
-    </div>
+    </main>
   )
 }
 

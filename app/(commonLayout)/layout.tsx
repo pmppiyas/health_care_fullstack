@@ -8,7 +8,7 @@ export default function CommonLayout({
   children: React.ReactNode
 }) {
   return (
-    <div>
+    <div className="overflow-hidden">
       <Navbar />
       <div className="flex flex-col items-center">{children}</div>
       <Footer />
