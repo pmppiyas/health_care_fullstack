@@ -7,6 +7,7 @@ import { verifyToken } from "@/lib/token/verifyToken"
 import User from "@/app/api/user/user.model"
 import { AuthUser } from "@/interfaces/auth.interface"
 import { StatusCodes } from "http-status-codes"
+import { handleError } from "@/lib/error/handleError"
 
 export type RouteContext = {
   params: Promise<Record<string, string>>
@@ -103,15 +104,15 @@ export function withAuth(...allowedRoles: Role[]) {
 
         return await handler(req, context, verifiedToken)
       } catch (error) {
-        console.error("Authentication error:", error)
+        console.error("Auth/Handler error:", error)
+
+        const { statusCode, message } = handleError(error)
 
         return NextResponse.json(
-          {
-            success: false,
-            message: "Unauthorized",
-          },
-          { status: StatusCodes.UNAUTHORIZED }
+          { success: false, message },
+          { status: statusCode }
         )
       }
     }
 }
+

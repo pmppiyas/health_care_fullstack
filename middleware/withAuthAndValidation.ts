@@ -4,6 +4,7 @@ import { withAuth } from "@/middleware/withAuth"
 import { Role } from "@/app/api/user/user.interface"
 import { AuthUser } from "@/interfaces/auth.interface"
 import { StatusCodes } from "http-status-codes/build/cjs/status-codes"
+import { handleError } from "@/lib/error/handleError"
 
 type RouteContext = {
   params: Promise<Record<string, string>>
@@ -39,15 +40,15 @@ export function withAuthAndValidation<
 
       return await handler(req, context, user, result.data as Output)
     } catch (error) {
-      console.error(error)
+      console.error("Handler error:", error)
+
+      const { statusCode, message } = handleError(error)
 
       return NextResponse.json(
-        {
-          success: false,
-          message: "Invalid request body",
-        },
-        { status: StatusCodes.BAD_REQUEST }
+        { success: false, message },
+        { status: statusCode }
       )
     }
   })
 }
+

@@ -12,7 +12,7 @@ const loginUser = async (data: LoginInput) => {
   }).select("+password")
 
   if (!user) {
-    throw new AppError(StatusCodes.UNAUTHORIZED, "Invalid email or password")
+    throw new AppError(StatusCodes.UNAUTHORIZED, "User not found")
   }
 
   if (user.status !== UserStatus.ACTIVE) {
@@ -22,7 +22,7 @@ const loginUser = async (data: LoginInput) => {
   const isPasswordMatched = await comparePassword(data.password, user.password)
 
   if (!isPasswordMatched) {
-    throw new AppError(StatusCodes.UNAUTHORIZED, "Invalid email or password")
+    throw new AppError(StatusCodes.UNAUTHORIZED, "Password is Incorrect")
   }
 
   const accessToken = createAccessToken({

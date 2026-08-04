@@ -5,8 +5,11 @@ import { sendResponse } from "@/lib/utils/sendResponse"
 import { StatusCodes } from "http-status-codes"
 import { NextRequest } from "next/server"
 
-// GET /api/doctor-patient — list all assignments (admin only)
-export const GET = withAuth(Role.ADMIN)(async (req: NextRequest, context, user) => {
+export const GET = withAuth(Role.ADMIN)(async (
+  req: NextRequest,
+  context,
+  user
+) => {
   const assignments = await DoctorPatientService.getAllAssignments(req)
   return sendResponse({
     statusCode: StatusCodes.OK,

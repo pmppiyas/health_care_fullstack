@@ -15,7 +15,7 @@ export function ContactHero() {
 
         <h1 className="text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
           Let&apos;s Talk About
-          <span className="text-primary"> DocZone</span>
+          <span className="text-primary"> HealthCare+</span>
         </h1>
 
         <p className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">

@@ -1,45 +1,54 @@
-import Link from "next/link"
-import React from "react"
-import { Menu } from "lucide-react"
+"use client"
 
+import Link from "next/link"
+import { usePathname } from "next/navigation"
+import { Menu } from "lucide-react"
 import { Button, buttonVariants } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import Logo from "@/components/shared/Logo"
 
 const Navbar = () => {
+  const pathname = usePathname()
+
+  const navItems = [
+    { href: "/", label: "Home" },
+    { href: "/about", label: "About Us" },
+    { href: "/contact", label: "Contact" },
+  ]
+
+  const isActive = (href: string) => {
+    if (href === "/") return pathname === "/"
+    return pathname.startsWith(href)
+  }
+
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <div className="shrink-0">
-            <Link
-              href="/"
-              className="text-2xl font-bold tracking-tight text-primary"
-            >
-              HealthCare+
-            </Link>
+            <Logo />
           </div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden space-x-8 md:flex">
-            <Link
-              href="/"
-              className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
-            >
-              Home
-            </Link>
-            <Link
-              href="/about"
-              className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
-            >
-              About Us
-            </Link>
-            <Link
-              href="/contact"
-              className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
-            >
-              Contact
-            </Link>
+          <nav className="hidden items-center space-x-8 md:flex">
+            {navItems.map((item) => {
+              const active = isActive(item.href)
+
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`relative py-2 text-sm font-medium transition-colors ${
+                    active
+                      ? "text-primary after:absolute after:bottom-1 after:left-0 after:h-0.5 after:w-full after:bg-primary"
+                      : "text-muted-foreground hover:text-primary"
+                  } `}
+                >
+                  {item.label}
+                </Link>
+              )
+            })}
           </nav>
 
           {/* Desktop Auth Buttons */}
@@ -50,6 +59,7 @@ const Navbar = () => {
             >
               Log in
             </Link>
+
             <Link
               href="/register"
               className={buttonVariants({ variant: "default" })}
@@ -58,36 +68,36 @@ const Navbar = () => {
             </Link>
           </div>
 
-          {/* Mobile Menu (Sheet) */}
+          {/* Mobile Menu */}
           <div className="flex items-center md:hidden">
             <Sheet>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="md:hidden">
+                <Button variant="ghost" size="icon" className="-mr-4 md:hidden">
                   <Menu className="h-6 w-6" />
                   <span className="sr-only">Toggle Menu</span>
                 </Button>
               </SheetTrigger>
+
               <SheetContent side="right" className="w-75 sm:w-100">
                 <nav className="mt-8 flex flex-col gap-6 px-8">
                   <div className="flex flex-col space-y-4">
-                    <Link
-                      href="/"
-                      className="text-lg font-medium transition-colors hover:text-primary"
-                    >
-                      Home
-                    </Link>
-                    <Link
-                      href="/about"
-                      className="text-lg font-medium transition-colors hover:text-primary"
-                    >
-                      About Us
-                    </Link>
-                    <Link
-                      href="/contact"
-                      className="text-lg font-medium transition-colors hover:text-primary"
-                    >
-                      Contact
-                    </Link>
+                    {navItems.map((item) => {
+                      const active = isActive(item.href)
+
+                      return (
+                        <Link
+                          key={item.href}
+                          href={item.href}
+                          className={`relative w-fit py-1 text-lg font-medium transition-colors ${
+                            active
+                              ? "text-primary after:absolute after:-bottom-1 after:left-0 after:h-0.5 after:w-full after:bg-primary"
+                              : "text-muted-foreground hover:text-primary"
+                          } `}
+                        >
+                          {item.label}
+                        </Link>
+                      )
+                    })}
                   </div>
 
                   <hr className="border-border" />
@@ -102,6 +112,7 @@ const Navbar = () => {
                     >
                       Log in
                     </Link>
+
                     <Link
                       href="/register"
                       className={buttonVariants({

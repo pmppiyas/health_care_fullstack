@@ -1,74 +1,108 @@
-import { ClipboardList, Link2, BarChart3 } from "lucide-react"
+import { UserPlus, ClipboardList, TrendingUp } from "lucide-react"
 
 const steps = [
   {
-    number: "01",
+    step: "01",
+    icon: UserPlus,
+    title: "Add a Doctor",
+    description:
+      "An admin registers a doctor with their specialization, hospital, license number, qualifications, and contact details. The doctor profile is instantly available for patient assignment.",
+    items: [
+      "Create user account with DOCTOR role",
+      "Fill in doctor profile details",
+      "Set availability & consultation fee",
+    ],
+    color: "text-primary",
+    bg: "bg-primary/10",
+  },
+  {
+    step: "02",
     icon: ClipboardList,
-    title: "Add Your Records",
+    title: "Manage Patients",
     description:
-      "Create doctor and patient profiles with the information your clinic needs.",
+      "Add patient profiles with their medical condition, diagnosis, blood group, medications, allergies, and emergency contacts. Assign one or more doctors to each patient.",
+    items: [
+      "Create patient profile & medical info",
+      "Assign doctors via relationship type",
+      "Track admission & discharge dates",
+    ],
+    color: "text-violet-600 dark:text-violet-400",
+    bg: "bg-violet-500/10",
   },
   {
-    number: "02",
-    icon: Link2,
-    title: "Connect Doctors & Patients",
+    step: "03",
+    icon: TrendingUp,
+    title: "Track Analytics",
     description:
-      "Assign patients to doctors and manage their relationships from one place.",
-  },
-  {
-    number: "03",
-    icon: BarChart3,
-    title: "Track & Analyze",
-    description:
-      "Use the dashboard to monitor records, assignments and healthcare trends.",
+      "View real-time analytics — how many patients each doctor manages, patient status distribution, hospital-wise breakdowns, and overall platform health metrics.",
+    items: [
+      "View doctor-patient assignments",
+      "Monitor patient status changes",
+      "Generate reports & insights",
+    ],
+    color: "text-emerald-600 dark:text-emerald-400",
+    bg: "bg-emerald-500/10",
   },
 ]
 
 export function HowItWorks() {
   return (
-    <section className="bg-muted/30 py-24">
+    <section id="how-it-works" className="bg-muted/30 py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-2xl text-center">
-          <span className="text-sm font-semibold text-primary">
+        {/* Header */}
+        <div className="mb-14 text-center">
+          <p className="mb-2 text-sm font-semibold tracking-widest text-primary uppercase">
             How It Works
-          </span>
-
-          <h2 className="mt-3 text-3xl font-bold sm:text-4xl">
-            Simple workflow, powerful results
+          </p>
+          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
+            Up and Running in 3 Simple Steps
           </h2>
-
-          <p className="mt-4 text-muted-foreground">
-            Manage your healthcare data in just a few simple steps.
+          <p className="mx-auto mt-4 max-w-xl text-muted-foreground">
+            DocZone is designed to be intuitive. No complex setup — just
+            straightforward healthcare management.
           </p>
         </div>
 
-        <div className="relative mt-14 grid gap-8 md:grid-cols-3">
-          {steps.map((step) => {
-            const Icon = step.icon
+        {/* Steps */}
+        <div className="relative">
+          {/* Connector line (desktop) */}
+          <div className="absolute top-8 left-1/2 hidden h-full w-px -translate-x-1/2 bg-border lg:block" />
 
-            return (
+          <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
+            {steps.map((step, i) => (
               <div
-                key={step.number}
-                className="relative rounded-2xl border bg-background p-7"
+                key={step.step}
+                className="group relative flex flex-col rounded-2xl border border-border bg-card p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg"
               >
-                <div className="flex items-center justify-between">
-                  <div className="flex size-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                    <Icon className="size-6" />
-                  </div>
-
-                  <span className="text-4xl font-bold text-primary/10">
-                    {step.number}
+                {/* Step number */}
+                <div className="mb-4 flex items-center justify-between">
+                  <span className="text-4xl font-black text-border">
+                    {step.step}
                   </span>
+                  <div className={`rounded-xl p-2.5 ${step.bg}`}>
+                    <step.icon className={`size-5 ${step.color}`} />
+                  </div>
                 </div>
 
-                <h3 className="mt-6 text-xl font-semibold">{step.title}</h3>
-
-                <p className="mt-3 text-sm leading-6 text-muted-foreground">
+                <h3 className="mb-2 text-lg font-bold">{step.title}</h3>
+                <p className="mb-4 text-sm leading-relaxed text-muted-foreground">
                   {step.description}
                 </p>
+
+                {/* Checklist */}
+                <ul className="mt-auto space-y-1.5">
+                  {step.items.map((item) => (
+                    <li key={item} className="flex items-start gap-2 text-sm">
+                      <span className={`mt-0.5 font-bold ${step.color}`}>
+                        ✓
+                      </span>
+                      <span className="text-muted-foreground">{item}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
-            )
-          })}
+            ))}
+          </div>
         </div>
       </div>
     </section>
