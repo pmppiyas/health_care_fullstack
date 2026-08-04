@@ -1,4 +1,4 @@
-# DocZone — Doctor Tracker
+# HealthCare+ — Doctor & Patient Tracker
 
 > A secure, full-stack administrative portal for managing doctors and patients — built with Next.js 16, MongoDB, and shadcn/ui.
 
@@ -27,11 +27,11 @@
 
 ## Live Demo
 
-| Resource              | URL                                             |
-| --------------------- | ----------------------------------------------- |
-| **Live App**          | `https://doczone.vercel.app`                    |
-| **GitHub Repo**       | `https://github.com/yourusername/doczone`       |
-| **Admin Credentials** | Email: `admin@gmail.com` · Password: `Admin123` |
+| Resource              | URL                                                 |
+| --------------------- | --------------------------------------------------- |
+| **Live App**          | `https://doctortracker.vercel.app`                  |
+| **GitHub Repo**       | `https://github.com/pmppiyas/health_care_fullstack` |
+| **Admin Credentials** | Email: `admin@gmail.com` · Password: `Admin123`     |
 
 ---
 
@@ -577,4 +577,4 @@ const [results, total] = await Promise.all([
 
 ## License
 
-MIT © 2025 DocZone - Prince Mahmud Piyas
+MIT © 2025 HealthCare+ - Prince Mahmud Piyas
