@@ -52,7 +52,6 @@ const LoginPage = () => {
   const onSubmit = async (data: LoginFormValues) => {
     try {
       const response = await login(data)
-      console.log("Login response:", response)
       toast.success(response.message)
       router.push("/")
     } catch (error) {

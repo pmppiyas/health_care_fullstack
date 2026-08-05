@@ -1,21 +1,48 @@
 import { AppError } from "@/lib/error/AppError"
+import { hashPassword } from "@/lib/auth/password"
+import { Role } from "@/app/api/user/user.interface"
+import User from "@/app/api/user/user.model"
 import Doctor from "./doctor.model"
 import { CreateDoctorInput, UpdateDoctorInput } from "./doctor.validation"
 import { AuthUser } from "@/interfaces/auth.interface"
 
 const createDoctor = async (payload: CreateDoctorInput, user: AuthUser) => {
-  const existingDoctor = await Doctor.findOne({
-    $or: [{ email: payload.email }, { licenseNumber: payload.licenseNumber }],
-  })
+  const { password, ...doctorData } = payload
 
+  const [existingUser, existingDoctor] = await Promise.all([
+    User.findOne({ email: payload.email }),
+    Doctor.findOne({ licenseNumber: payload.licenseNumber }),
+  ])
+
+  if (existingUser) {
+    throw new AppError(409, "A user account with this email already exists")
+  }
   if (existingDoctor) {
-    throw new AppError(
-      409,
-      "Doctor with this email or license number already exists"
-    )
+    throw new AppError(409, "A doctor with this license number already exists")
   }
 
-  const doctor = await Doctor.create(payload)
+  const hashedPassword = await hashPassword(password)
+
+  const newUser = await User.create({
+    name: payload.name,
+    email: payload.email,
+    password: hashedPassword,
+    role: Role.DOCTOR,
+    photoUrl: payload.photoUrl ?? null,
+  })
+
+  let doctor
+  try {
+    doctor = await Doctor.create({
+      ...doctorData,
+      userId: newUser._id,
+    })
+  } catch (err) {
+    await User.findByIdAndDelete(newUser._id)
+    throw err
+  }
+
+  await User.findByIdAndUpdate(newUser._id, { doctorId: doctor._id })
 
   return doctor
 }
@@ -96,6 +123,10 @@ const deleteDoctor = async (doctorId: string) => {
 
   if (!doctor) {
     throw new AppError(404, "Doctor not found")
+  }
+
+  if (doctor.userId) {
+    await User.findByIdAndDelete(doctor.userId)
   }
 
   return doctor
