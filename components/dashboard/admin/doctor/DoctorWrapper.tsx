@@ -155,9 +155,7 @@ export default function DoctorWrapper() {
         onRowClick={handleView}
       />
 
-      {!isFetching && total > 0 && (
-        <Pagination currentPage={page} totalPages={totalPages} />
-      )}
+      {!isFetching && <Pagination currentPage={page} totalPages={totalPages} />}
 
       <DoctorFormModal
         open={formOpen}
