@@ -10,6 +10,18 @@ const phoneSchema = z
   .trim()
   .regex(/^\+?[0-9\s\-().]{7,20}$/, "Please provide a valid phone number")
 
+const passwordSchema = z
+  .string({ required_error: "Password is required" })
+  .min(8, "Password must be at least 8 characters")
+  .max(64, "Password must not exceed 64 characters")
+  .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
+  .regex(/[a-z]/, "Password must contain at least one lowercase letter")
+  .regex(/[0-9]/, "Password must contain at least one number")
+  .regex(
+    /[^A-Za-z0-9]/,
+    "Password must contain at least one special character"
+  )
+
 export const emergencyContactSchema = z.object({
   name: z
     .string({ required_error: "Emergency contact name is required" })
@@ -24,11 +36,7 @@ export const emergencyContactSchema = z.object({
   phone: phoneSchema,
 })
 
-const basePatientSchemaObject = z.object({
-  userId: mongoIdSchema.describe(
-    "ObjectId of the User account with role PATIENT"
-  ),
-
+const patientFieldsSchema = z.object({
   name: z
     .string({ required_error: "Patient name is required" })
     .trim()
@@ -46,16 +54,15 @@ const basePatientSchemaObject = z.object({
     message: `Gender must be one of: ${Object.values(Gender).join(", ")}`,
   }),
 
-bloodGroup: z.nativeEnum(BloodGroup).optional(),
+  bloodGroup: z.nativeEnum(BloodGroup).optional(),
 
   phone: phoneSchema.optional(),
 
   email: z
-    .string()
+    .string({ required_error: "Email is required" })
     .trim()
     .toLowerCase()
-    .email("Please provide a valid email address")
-    .optional(),
+    .email("Please provide a valid email address"),
 
   address: z
     .string()
@@ -110,7 +117,10 @@ bloodGroup: z.nativeEnum(BloodGroup).optional(),
     .optional(),
 })
 
-const dateValidationRefinement = (data: any) => {
+const dateValidationRefinement = (data: {
+  dischargeDate?: Date
+  admissionDate?: Date
+}) => {
   if (data.dischargeDate && data.admissionDate) {
     return data.dischargeDate >= data.admissionDate
   }
@@ -122,18 +132,13 @@ const dateValidationError = {
   path: ["dischargeDate"],
 }
 
-const basePatientSchema = basePatientSchemaObject.refine(
-  dateValidationRefinement,
-  dateValidationError
-)
+export const createPatientSchema = patientFieldsSchema
+  .extend({
+    password: passwordSchema,
+  })
+  .refine(dateValidationRefinement, dateValidationError)
 
-export const createPatientSchema = basePatientSchema.refine(
-  dateValidationRefinement,
-  dateValidationError
-)
-
-export const updatePatientSchema = basePatientSchemaObject
-  .omit({ userId: true })
+export const updatePatientSchema = patientFieldsSchema
   .partial()
   .refine(dateValidationRefinement, dateValidationError)
 

@@ -3,15 +3,41 @@ import Patient from "./patient.model"
 import DoctorPatient from "@/app/api/doctor-patient/doctorPatient.model"
 import { CreatePatientInput, UpdatePatientInput } from "./patient.validation"
 import { AuthUser } from "@/interfaces/auth.interface"
+import User from "@/app/api/user/user.model"
+import { Role } from "@/app/api/user/user.interface"
+import { hashPassword } from "@/lib/auth/password"
 
-const createPatient = async (payload: CreatePatientInput, user: AuthUser) => {
-  const existingPatient = await Patient.findOne({ userId: payload.userId })
+const createPatient = async (payload: CreatePatientInput, _user: AuthUser) => {
+  const { password, ...patientData } = payload
 
-  if (existingPatient) {
-    throw new AppError(409, "A patient profile already exists for this user")
+  const existingUser = await User.findOne({ email: payload.email })
+  if (existingUser) {
+    throw new AppError(409, "A user account with this email already exists")
   }
 
-  const patient = await Patient.create(payload as any)
+  const hashedPassword = await hashPassword(password)
+
+  const newUser = await User.create({
+    name: payload.name,
+    email: payload.email,
+    password: hashedPassword,
+    role: Role.PATIENT,
+    photoUrl: payload.photoUrl ?? null,
+  })
+
+  let patient
+  try {
+    patient = await Patient.create({
+      ...patientData,
+      userId: newUser._id,
+    })
+  } catch (error) {
+    await User.findByIdAndDelete(newUser._id)
+    throw error
+  }
+
+  await User.findByIdAndUpdate(newUser._id, { patientId: patient._id })
+
   return patient
 }
 

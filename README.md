@@ -505,12 +505,12 @@ patientSchema.index({ admissionDate: -1 })
 patientSchema.index({ gender: 1 })
 patientSchema.index({ doctorIds: 1 })
 
-// Doctors — category filter + unique lookup
+
 doctorSchema.index({ specialization: 1 })
 doctorSchema.index({ hospital: 1 })
 doctorSchema.index({ licenseNumber: 1 })
 
-// DoctorPatient — prevent duplicates, fast joins
+
 doctorPatientSchema.index({ doctorId: 1, patientId: 1 }, { unique: true })
 doctorPatientSchema.index({ doctorId: 1, assignedAt: -1 })
 doctorPatientSchema.index({ patientId: 1, assignedAt: -1 })

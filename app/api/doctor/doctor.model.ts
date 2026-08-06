@@ -112,8 +112,6 @@ const doctorSchema = new Schema<IDoctor>(
   }
 )
 
-doctorSchema.index({ userId: 1 })
-doctorSchema.index({ licenseNumber: 1 })
 doctorSchema.index({ specialization: 1 })
 doctorSchema.index({ hospital: 1 })
 doctorSchema.index({ patientIds: 1 })

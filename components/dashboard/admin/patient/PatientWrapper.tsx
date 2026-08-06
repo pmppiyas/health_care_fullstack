@@ -6,19 +6,19 @@ import { toast } from "sonner"
 import DataTable from "@/components/dashboard/shared/DataTable"
 import Pagination from "@/components/dashboard/shared/Pagination"
 import ConfirmModal from "@/components/dashboard/shared/ConfirmModal"
-import DoctorFormModal, {
-  DoctorFormMode,
-} from "@/components/dashboard/admin/doctor/DoctorFormModal"
-import DoctorHeader from "@/components/dashboard/admin/doctor/DoctorHeader"
+import PatientFormModal, {
+  PatientFormMode,
+} from "@/components/dashboard/admin/patient/PatientFormModal"
+import PatientHeader from "@/components/dashboard/admin/patient/PatientHeader"
 import {
-  useDeleteDOCTORMutation,
-  useGetDOCTORsQuery,
-} from "@/redux/features/doctor.api"
-import { DoctorWithId } from "@/interfaces/doctor.interface"
-import { getDoctorColumns } from "@/components/dashboard/admin/doctor/DoctorColumn"
+  useDeletePATIENTMutation,
+  useGetPATIENTsQuery,
+} from "@/redux/features/patient.api"
+import { PatientWithId } from "@/interfaces/patient.interface"
+import { getPatientColumns } from "@/components/dashboard/admin/patient/PatientColumn"
 import { P_LIMIT, P_PAGE, P_SEARCH } from "@/constant/meta.constant"
 
-export default function DoctorWrapper() {
+export default function PatientWrapper() {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
@@ -29,25 +29,24 @@ export default function DoctorWrapper() {
   const page = Math.max(Number(searchParams.get(P_PAGE) ?? "1"), 1)
   const limit = Number(searchParams.get(P_LIMIT) ?? "10") || 10
 
-  const { data, isFetching } = useGetDOCTORsQuery({
+  const { data, isFetching } = useGetPATIENTsQuery({
     page,
     limit,
     search: search.trim() || undefined,
   })
 
-  const [deleteDoctor, { isLoading: isDeleting }] = useDeleteDOCTORMutation()
+  const [deletePatient, { isLoading: isDeleting }] = useDeletePATIENTMutation()
 
-  const doctors = (data?.data ?? []) as DoctorWithId[]
+  const patients = (data?.data ?? []) as PatientWithId[]
   const totalPages = data?.meta?.totalPages ?? 0
 
-  const [deleteTarget, setDeleteTarget] = useState<DoctorWithId | null>(null)
+  const [deleteTarget, setDeleteTarget] = useState<PatientWithId | null>(null)
   const [formOpen, setFormOpen] = useState(false)
-  const [formMode, setFormMode] = useState<DoctorFormMode>("add")
-  const [editTarget, setEditTarget] = useState<DoctorWithId | undefined>()
+  const [formMode, setFormMode] = useState<PatientFormMode>("add")
+  const [editTarget, setEditTarget] = useState<PatientWithId | undefined>()
 
   const updateParams = (updates: Record<string, string | null>) => {
     const params = new URLSearchParams(searchParams.toString())
-
     Object.entries(updates).forEach(([key, value]) => {
       if (value === null || value === "") {
         params.delete(key)
@@ -55,9 +54,7 @@ export default function DoctorWrapper() {
         params.set(key, value)
       }
     })
-
     const queryString = params.toString()
-
     startTransition(() => {
       router.replace(`${pathname}${queryString ? `?${queryString}` : ""}`, {
         scroll: false,
@@ -66,52 +63,39 @@ export default function DoctorWrapper() {
   }
 
   const handlePageChange = (value: number) => {
-    updateParams({
-      [P_PAGE]: value === 1 ? null : String(value),
-    })
+    updateParams({ [P_PAGE]: value === 1 ? null : String(value) })
   }
 
-  const handleView = (doctor: DoctorWithId) => {
-    router.push(`/admin/dashboard/doctors/${doctor._id}`)
+  const handleView = (patient: PatientWithId) => {
+    router.push(`/admin/dashboard/patients/${patient._id}`)
   }
 
-  const handleEdit = (doctor: DoctorWithId) => {
-    setEditTarget(doctor)
+  const handleEdit = (patient: PatientWithId) => {
+    setEditTarget(patient)
     setFormMode("edit")
     setFormOpen(true)
   }
 
-  const handleDeleteClick = (doctor: DoctorWithId) => {
-    setDeleteTarget(doctor)
+  const handleDeleteClick = (patient: PatientWithId) => {
+    setDeleteTarget(patient)
   }
 
   const handleDelete = async () => {
     if (!deleteTarget) return
-
     try {
-      await deleteDoctor(deleteTarget._id).unwrap()
-
+      await deletePatient(deleteTarget._id).unwrap()
       toast.success(`"${deleteTarget.name}" deleted successfully.`)
-
       setDeleteTarget(null)
-
-      if (doctors.length === 1 && page > 1) {
+      if (patients.length === 1 && page > 1) {
         handlePageChange(page - 1)
       }
     } catch (error: unknown) {
-      const message = (
-        error as {
-          data?: {
-            message?: string
-          }
-        }
-      )?.data?.message
-
-      toast.error(message ?? "Failed to delete doctor.")
+      const message = (error as { data?: { message?: string } })?.data?.message
+      toast.error(message ?? "Failed to delete patient.")
     }
   }
 
-  const columns = getDoctorColumns({
+  const columns = getPatientColumns({
     onView: handleView,
     onEdit: handleEdit,
     onDelete: handleDeleteClick,
@@ -119,38 +103,38 @@ export default function DoctorWrapper() {
 
   return (
     <div className="space-y-4">
-      <DoctorHeader
-        onAddDoctor={() => {
+      <PatientHeader
+        onAddPatient={() => {
           setEditTarget(undefined)
           setFormMode("add")
           setFormOpen(true)
         }}
       />
 
-      <DataTable<DoctorWithId>
+      <DataTable<PatientWithId>
         columns={columns}
-        data={doctors}
+        data={patients}
         keyField="_id"
         isLoading={isFetching}
         skeletonRows={limit}
         emptyMessage={
           search
-            ? `No doctors found matching "${search}".`
-            : "No doctors found."
+            ? `No patients found matching "${search}".`
+            : "No patients found."
         }
         onRowClick={handleView}
       />
 
       {!isFetching && <Pagination currentPage={page} totalPages={totalPages} />}
 
-      <DoctorFormModal
+      <PatientFormModal
         open={formOpen}
         mode={formMode}
-        doctor={editTarget}
+        patient={editTarget}
         onClose={() => setFormOpen(false)}
         onSuccess={() => {
           toast.success(
-            formMode === "add" ? "Doctor added!" : "Doctor updated!"
+            formMode === "add" ? "Patient added!" : "Patient updated!"
           )
         }}
       />
@@ -160,7 +144,7 @@ export default function DoctorWrapper() {
         onClose={() => setDeleteTarget(null)}
         onConfirm={handleDelete}
         isLoading={isDeleting}
-        title="Delete Doctor?"
+        title="Delete Patient?"
         description={`"${deleteTarget?.name}" will be permanently deleted.`}
         confirmLabel="Yes, Delete"
         variant="danger"
