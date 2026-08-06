@@ -35,7 +35,9 @@ const icons: Record<string, LucideIcon> = {
 const NavLink = ({ title, href, iconName, exact = false }: NavLinkProps) => {
   const pathname = usePathname()
 
-  const active = exact
+  const isExact = exact || href === "/admin/dashboard"
+
+  const active = isExact
     ? pathname === href
     : pathname === href || pathname.startsWith(`${href}/`)
 
@@ -49,7 +51,6 @@ const NavLink = ({ title, href, iconName, exact = false }: NavLinkProps) => {
       className={cn(
         "group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium",
         "transition-colors duration-200",
-        "outline-none focus-visible:ring-2 focus-visible:ring-primary/50",
         active
           ? "bg-primary text-primary-foreground"
           : "text-muted-foreground hover:bg-primary/10 hover:text-primary"
@@ -70,5 +71,4 @@ const NavLink = ({ title, href, iconName, exact = false }: NavLinkProps) => {
     </Link>
   )
 }
-
 export default NavLink

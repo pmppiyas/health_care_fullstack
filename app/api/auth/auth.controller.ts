@@ -2,6 +2,7 @@ import { StatusCodes } from "http-status-codes"
 import { LoginInput } from "./auth.validation"
 import { sendResponse } from "@/lib/utils/sendResponse"
 import { AuthService } from "@/app/api/auth/auth.services"
+import { AuthUser } from "@/interfaces/auth.interface"
 
 const loginUser = async (data: LoginInput) => {
   const result = await AuthService.loginUser(data)
@@ -26,6 +27,17 @@ const loginUser = async (data: LoginInput) => {
   return response
 }
 
+const getMe = async (authUser: AuthUser) => {
+  const user = await AuthService.getMe(authUser)
+
+  return sendResponse({
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "User fetched successfully",
+    data: user,
+  })
+}
+
 const logoutUser = async () => {
   const response = sendResponse({
     statusCode: StatusCodes.OK,
@@ -46,5 +58,6 @@ const logoutUser = async () => {
 
 export const AuthController = {
   loginUser,
+  getMe,
   logoutUser,
 }

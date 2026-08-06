@@ -5,6 +5,7 @@ import { LoginInput } from "@/app/api/auth/auth.validation"
 import { AppError } from "@/lib/error/AppError"
 import { UserStatus } from "@/app/api/user/user.interface"
 import { createAccessToken } from "@/lib/token/createToken"
+import { AuthUser } from "@/interfaces/auth.interface"
 
 const loginUser = async (data: LoginInput) => {
   const user = await User.findOne({
@@ -34,14 +35,38 @@ const loginUser = async (data: LoginInput) => {
   return {
     accessToken,
     user: {
-      id: user._id,
+      id: user._id.toString(),
       name: user.name,
       email: user.email,
       role: user.role,
+      photoUrl: user.photoUrl ?? null,
     },
+  }
+}
+
+const getMe = async (authUser: AuthUser) => {
+  const user = await User.findById(authUser.id).select(
+    "name email role photoUrl status"
+  )
+
+  if (!user) {
+    throw new AppError(StatusCodes.NOT_FOUND, "User not found")
+  }
+
+  if (user.status !== UserStatus.ACTIVE) {
+    throw new AppError(StatusCodes.FORBIDDEN, "Your account is not active")
+  }
+
+  return {
+    id: user._id.toString(),
+    name: user.name,
+    email: user.email,
+    role: user.role,
+    photoUrl: user.photoUrl ?? null,
   }
 }
 
 export const AuthService = {
   loginUser,
+  getMe,
 }

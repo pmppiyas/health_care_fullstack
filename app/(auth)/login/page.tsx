@@ -10,8 +10,9 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
 import Logo from "@/components/shared/Logo"
-import { login } from "@/lib/api/auth/login"
 import { toast } from "sonner"
+import { useLoginMutation } from "@/redux/features/auth.api"
+import { Role } from "@/app/api/user/user.interface"
 
 const loginSchema = z.object({
   email: z
@@ -19,25 +20,32 @@ const loginSchema = z.object({
     .min(1, "Email is required")
     .email("Please enter a valid email address"),
 
-  password: z
-    .string()
-    .min(1, "Password is required")
-    .min(6, "Password must be at least 6 characters"),
+  password: z.string().min(1, "Password is required"),
 
   rememberMe: z.boolean(),
 })
 
 type LoginFormValues = z.infer<typeof loginSchema>
 
+const getDashboardPath = (role: Role) => {
+  switch (role) {
+    case Role.ADMIN:
+      return "/admin/dashboard"
+    default:
+      return "/"
+  }
+}
+
 const LoginPage = () => {
   const router = useRouter()
+  const [login, { isLoading }] = useLoginMutation()
 
   const {
     register,
     handleSubmit,
     setValue,
     watch,
-    formState: { errors, isSubmitting },
+    formState: { errors },
   } = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -51,11 +59,18 @@ const LoginPage = () => {
 
   const onSubmit = async (data: LoginFormValues) => {
     try {
-      const response = await login(data)
+      const response = await login({
+        email: data.email.trim().toLowerCase(),
+        password: data.password,
+      }).unwrap()
+
       toast.success(response.message)
-      router.push("/")
+      router.push(getDashboardPath(response.data.user.role))
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Login failed")
+      const message =
+        (error as { data?: { message?: string } })?.data?.message ??
+        "Login failed"
+      toast.error(message)
     }
   }
 
@@ -169,8 +184,8 @@ const LoginPage = () => {
             </div>
 
             {/* Submit */}
-            <Button type="submit" className="w-full" disabled={isSubmitting}>
-              {isSubmitting ? "Signing in..." : "Sign in"}
+            <Button type="submit" className="w-full" disabled={isLoading}>
+              {isLoading ? "Signing in..." : "Sign in"}
             </Button>
           </form>
 

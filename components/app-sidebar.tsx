@@ -17,15 +17,12 @@ import {
 import Logo from "@/components/shared/Logo"
 import { getRoutesByRole } from "@/routes/routes"
 import NavLinkClient from "@/components/nav-link-client"
-
-const user = {
-  name: "shadcn",
-  email: "m@example.com",
-  avatar: "/avatars/shadcn.jpg",
-}
+import { useAppSelector } from "@/redux/hooks"
+import { Role } from "@/app/api/user/user.interface"
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const role = "ADMIN"
+  const user = useAppSelector((state) => state.auth.user)
+  const role = user?.role ?? Role.ADMIN
   const navMenu = getRoutesByRole(role)
 
   return (
@@ -33,12 +30,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton
-              asChild
-              className="data-[slot=sidebar-menu-button]:p-1.5!"
-            >
+            <div className="ml-3 flex items-center">
               <Logo />
-            </SidebarMenuButton>
+            </div>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
@@ -67,7 +61,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         ))}
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={user} />
+        <NavUser />
       </SidebarFooter>
     </Sidebar>
   )

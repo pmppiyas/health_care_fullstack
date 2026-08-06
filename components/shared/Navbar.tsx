@@ -6,6 +6,8 @@ import { Menu } from "lucide-react"
 import { Button, buttonVariants } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import Logo from "@/components/shared/Logo"
+import { useGetMeQuery } from "@/redux/features/auth.api"
+import { getDashboardRoute } from "@/utils/get-dashboard-route"
 
 const Navbar = () => {
   const pathname = usePathname()
@@ -20,6 +22,13 @@ const Navbar = () => {
     if (href === "/") return pathname === "/"
     return pathname.startsWith(href)
   }
+
+  const { data, isLoading } = useGetMeQuery()
+
+  const isLoggedIn = !!data?.data
+
+  console.log("Is user logged in?", isLoggedIn)
+  const dblink = isLoggedIn ? getDashboardRoute(data?.data?.role) : "/login"
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
@@ -53,19 +62,32 @@ const Navbar = () => {
 
           {/* Desktop Auth Buttons */}
           <div className="hidden items-center space-x-4 md:flex">
-            <Link
-              href="/login"
-              className={buttonVariants({ variant: "ghost" })}
-            >
-              Log in
-            </Link>
+            {isLoading ? (
+              <div className="h-9 w-24 animate-pulse rounded-md bg-muted" />
+            ) : isLoggedIn ? (
+              <Link
+                href={dblink}
+                className={buttonVariants({ variant: "default" })}
+              >
+                Dashboard
+              </Link>
+            ) : (
+              <>
+                <Link
+                  href="/login"
+                  className={buttonVariants({ variant: "ghost" })}
+                >
+                  Log in
+                </Link>
 
-            <Link
-              href="/register"
-              className={buttonVariants({ variant: "default" })}
-            >
-              Sign up
-            </Link>
+                <Link
+                  href="/register"
+                  className={buttonVariants({ variant: "default" })}
+                >
+                  Sign up
+                </Link>
+              </>
+            )}
           </div>
 
           {/* Mobile Menu */}
