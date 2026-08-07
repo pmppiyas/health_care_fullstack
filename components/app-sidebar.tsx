@@ -25,6 +25,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const role = user?.role ?? Role.ADMIN
   const navMenu = getRoutesByRole(role)
 
+  const allHrefs = React.useMemo(
+    () => navMenu.flatMap((section) => section.nav.map((item) => item.href)),
+    [navMenu]
+  )
+
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
@@ -52,6 +57,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                       href={item.href}
                       title={item.title}
                       iconName={item.iconName || ""}
+                      allHrefs={allHrefs}
                     />
                   </SidebarMenuItem>
                 ))}

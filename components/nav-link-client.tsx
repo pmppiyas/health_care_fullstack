@@ -20,6 +20,7 @@ type NavLinkProps = {
   href: string
   iconName?: string
   exact?: boolean
+  allHrefs?: string[]
 }
 
 const icons: Record<string, LucideIcon> = {
@@ -32,14 +33,49 @@ const icons: Record<string, LucideIcon> = {
   PhoneCall,
 }
 
-const NavLink = ({ title, href, iconName, exact = false }: NavLinkProps) => {
+/**
+ * Step 1: A route "matches" the current pathname if it's an exact match
+ * or the pathname is nested under it (e.g. href=/doctors matches
+ * /doctors/123, /doctors/create, etc).
+ */
+function routeMatches(pathname: string, href: string) {
+  return pathname === href || pathname.startsWith(`${href}/`)
+}
+
+/**
+ * Step 2: Among ALL sibling hrefs that match the current pathname,
+ * find the most specific one (longest string = most nested/specific route).
+ * Only that href should be considered "active" — this is what stops
+ * "/doctors" from lighting up while we're actually on "/doctors/create".
+ */
+function isBestMatch(pathname: string, href: string, allHrefs: string[]) {
+  if (!routeMatches(pathname, href)) return false
+
+  const candidates = allHrefs.filter((h) => routeMatches(pathname, h))
+
+  if (candidates.length === 0) return true
+
+  const best = candidates.reduce((a, b) => (b.length > a.length ? b : a))
+
+  return best === href
+}
+
+const NavLink = ({
+  title,
+  href,
+  iconName,
+  exact = false,
+  allHrefs = [],
+}: NavLinkProps) => {
   const pathname = usePathname()
 
   const isExact = exact || href === "/admin/dashboard"
 
+  // Step 3: exact-match links behave as before; prefix-match links now
+  // resolve against siblings instead of blindly using startsWith.
   const active = isExact
     ? pathname === href
-    : pathname === href || pathname.startsWith(`${href}/`)
+    : isBestMatch(pathname, href, allHrefs)
 
   const Icon = iconName ? icons[iconName] : null
 
@@ -71,4 +107,5 @@ const NavLink = ({ title, href, iconName, exact = false }: NavLinkProps) => {
     </Link>
   )
 }
+
 export default NavLink

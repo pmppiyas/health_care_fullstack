@@ -41,9 +41,6 @@ export default function DoctorWrapper() {
   const totalPages = data?.meta?.totalPages ?? 0
 
   const [deleteTarget, setDeleteTarget] = useState<DoctorWithId | null>(null)
-  const [formOpen, setFormOpen] = useState(false)
-  const [formMode, setFormMode] = useState<DoctorFormMode>("add")
-  const [editTarget, setEditTarget] = useState<DoctorWithId | undefined>()
 
   const updateParams = (updates: Record<string, string | null>) => {
     const params = new URLSearchParams(searchParams.toString())
@@ -76,9 +73,7 @@ export default function DoctorWrapper() {
   }
 
   const handleEdit = (doctor: DoctorWithId) => {
-    setEditTarget(doctor)
-    setFormMode("edit")
-    setFormOpen(true)
+    router.push(`/admin/dashboard/doctors/${doctor._id}/edit`)
   }
 
   const handleDeleteClick = (doctor: DoctorWithId) => {
@@ -119,13 +114,7 @@ export default function DoctorWrapper() {
 
   return (
     <div className="space-y-4">
-      <DoctorHeader
-        onAddDoctor={() => {
-          setEditTarget(undefined)
-          setFormMode("add")
-          setFormOpen(true)
-        }}
-      />
+      <DoctorHeader />
 
       <DataTable<DoctorWithId>
         columns={columns}
@@ -142,18 +131,6 @@ export default function DoctorWrapper() {
       />
 
       {!isFetching && <Pagination currentPage={page} totalPages={totalPages} />}
-
-      <DoctorFormModal
-        open={formOpen}
-        mode={formMode}
-        doctor={editTarget}
-        onClose={() => setFormOpen(false)}
-        onSuccess={() => {
-          toast.success(
-            formMode === "add" ? "Doctor added!" : "Doctor updated!"
-          )
-        }}
-      />
 
       <ConfirmModal
         open={!!deleteTarget}

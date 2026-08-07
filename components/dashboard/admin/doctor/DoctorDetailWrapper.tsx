@@ -200,7 +200,9 @@ export default function DoctorDetailWrapper({
             <Button
               variant="outline"
               size="sm"
-              onClick={() => setShowEdit(true)}
+              onClick={() =>
+                router.replace(`/admin/dashboard/doctors/${doctor._id}/edit`)
+              }
               className="gap-2"
             >
               <Pencil className="size-4" />
@@ -410,18 +412,6 @@ export default function DoctorDetailWrapper({
         )}
       </div>
 
-      {/* ── edit modal ────────────────────────────────────────────────────── */}
-      <DoctorFormModal
-        open={showEdit}
-        mode={"edit" as DoctorFormMode}
-        doctor={doctor}
-        onClose={() => setShowEdit(false)}
-        onSuccess={() => {
-          toast.success("Doctor updated successfully!")
-        }}
-      />
-
-      {/* ── delete confirm ────────────────────────────────────────────────── */}
       <ConfirmModal
         open={showDelete}
         onClose={() => setShowDelete(false)}

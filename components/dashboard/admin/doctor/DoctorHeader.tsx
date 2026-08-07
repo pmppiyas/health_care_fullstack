@@ -3,12 +3,11 @@
 import { Plus, Stethoscope } from "lucide-react"
 import PageHeader from "@/components/dashboard/shared/PageHeader"
 import SearchBar from "@/components/dashboard/shared/SearchBar"
+import { useRouter } from "next/navigation"
 
-interface DoctorHeaderProps {
-  onAddDoctor: () => void
-}
+const DoctorHeader = () => {
+  const router = useRouter()
 
-const DoctorHeader = ({ onAddDoctor }: DoctorHeaderProps) => {
   return (
     <PageHeader
       title="Doctors"
@@ -19,7 +18,7 @@ const DoctorHeader = ({ onAddDoctor }: DoctorHeaderProps) => {
         {
           label: "Add Doctor",
           icon: <Plus className="size-4" />,
-          onClick: onAddDoctor,
+          onClick: () => router.push("/admin/dashboard/doctors/create"),
         },
       ]}
     />
