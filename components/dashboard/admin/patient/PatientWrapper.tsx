@@ -6,9 +6,6 @@ import { toast } from "sonner"
 import DataTable from "@/components/dashboard/shared/DataTable"
 import Pagination from "@/components/dashboard/shared/Pagination"
 import ConfirmModal from "@/components/dashboard/shared/ConfirmModal"
-import PatientFormModal, {
-  PatientFormMode,
-} from "@/components/dashboard/admin/patient/PatientFormModal"
 import PatientHeader from "@/components/dashboard/admin/patient/PatientHeader"
 import {
   useDeletePATIENTMutation,
@@ -41,9 +38,6 @@ export default function PatientWrapper() {
   const totalPages = data?.meta?.totalPages ?? 0
 
   const [deleteTarget, setDeleteTarget] = useState<PatientWithId | null>(null)
-  const [formOpen, setFormOpen] = useState(false)
-  const [formMode, setFormMode] = useState<PatientFormMode>("add")
-  const [editTarget, setEditTarget] = useState<PatientWithId | undefined>()
 
   const updateParams = (updates: Record<string, string | null>) => {
     const params = new URLSearchParams(searchParams.toString())
@@ -71,9 +65,7 @@ export default function PatientWrapper() {
   }
 
   const handleEdit = (patient: PatientWithId) => {
-    setEditTarget(patient)
-    setFormMode("edit")
-    setFormOpen(true)
+    router.push(`/admin/dashboard/patients/${patient._id}/edit`)
   }
 
   const handleDeleteClick = (patient: PatientWithId) => {
@@ -84,7 +76,7 @@ export default function PatientWrapper() {
     if (!deleteTarget) return
     try {
       await deletePatient(deleteTarget._id).unwrap()
-      toast.success(`"${deleteTarget.name}" deleted successfully.`)
+      toast.success(`${deleteTarget.name} deleted successfully.`)
       setDeleteTarget(null)
       if (patients.length === 1 && page > 1) {
         handlePageChange(page - 1)
@@ -103,13 +95,7 @@ export default function PatientWrapper() {
 
   return (
     <div className="space-y-4">
-      <PatientHeader
-        onAddPatient={() => {
-          setEditTarget(undefined)
-          setFormMode("add")
-          setFormOpen(true)
-        }}
-      />
+      <PatientHeader />
 
       <DataTable<PatientWithId>
         columns={columns}
@@ -126,18 +112,6 @@ export default function PatientWrapper() {
       />
 
       {!isFetching && <Pagination currentPage={page} totalPages={totalPages} />}
-
-      <PatientFormModal
-        open={formOpen}
-        mode={formMode}
-        patient={editTarget}
-        onClose={() => setFormOpen(false)}
-        onSuccess={() => {
-          toast.success(
-            formMode === "add" ? "Patient added!" : "Patient updated!"
-          )
-        }}
-      />
 
       <ConfirmModal
         open={!!deleteTarget}

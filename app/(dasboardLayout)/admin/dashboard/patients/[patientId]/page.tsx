@@ -8,7 +8,7 @@ interface PatientDetailPageProps {
 
 function PatientDetailSkeleton() {
   return (
-    <div className="space-y-6 animate-pulse">
+    <div className="animate-pulse space-y-6">
       <div className="flex items-center justify-between">
         <Skeleton className="h-9 w-28 rounded-lg" />
         <div className="flex gap-2">

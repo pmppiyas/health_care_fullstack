@@ -3,12 +3,10 @@
 import { Plus, Users } from "lucide-react"
 import PageHeader from "@/components/dashboard/shared/PageHeader"
 import SearchBar from "@/components/dashboard/shared/SearchBar"
+import { useRouter } from "next/navigation"
 
-interface PatientHeaderProps {
-  onAddPatient: () => void
-}
-
-const PatientHeader = ({ onAddPatient }: PatientHeaderProps) => {
+const PatientHeader = () => {
+  const router = useRouter()
   return (
     <PageHeader
       title="Patients"
@@ -19,7 +17,7 @@ const PatientHeader = ({ onAddPatient }: PatientHeaderProps) => {
         {
           label: "Add Patient",
           icon: <Plus className="size-4" />,
-          onClick: onAddPatient,
+          onClick: () => router.push("/admin/dashboard/patients/create"),
         },
       ]}
     />

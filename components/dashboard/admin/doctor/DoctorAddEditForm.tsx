@@ -40,6 +40,7 @@ import {
   createDoctorSchema,
   updateDoctorSchema,
 } from "@/app/api/doctor/doctor.validation"
+import { toast } from "sonner"
 
 export type DoctorFormMode = "add" | "edit"
 
@@ -262,8 +263,10 @@ export default function DoctorAddEditForm({
             isAvailable: form.isAvailable,
           },
         }).unwrap()
+        toast.success("Doctor updated successfull")
+        window.location.href = "/admin/dashboard/doctors"
       } else {
-        await createDoctor({
+        const data = await createDoctor({
           name: form.name.trim(),
           email: form.email.trim(),
           password: form.password,
@@ -282,9 +285,9 @@ export default function DoctorAddEditForm({
           photoUrl: form.photoUrl.trim() || undefined,
           isAvailable: form.isAvailable,
         }).unwrap()
+        toast.success("Doctor added succcessfull")
+        window.location.href = `/admin/dashboard/doctors?id=${data?.data?._id}`
       }
-
-      window.location.href = "/admin/dashboard/doctors"
     } catch (err: unknown) {
       const msg = (
         err as {

@@ -137,7 +137,6 @@ export default function DoctorDetailWrapper({
   const { data, isLoading, isError } = useGetDOCTORByIdQuery(doctorId)
   const [deleteDoctor, { isLoading: isDeleting }] = useDeleteDOCTORMutation()
 
-  const [showEdit, setShowEdit] = useState(false)
   const [showDelete, setShowDelete] = useState(false)
 
   const doctor = data?.data

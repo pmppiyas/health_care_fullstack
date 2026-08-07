@@ -6,9 +6,6 @@ import { toast } from "sonner"
 import DataTable from "@/components/dashboard/shared/DataTable"
 import Pagination from "@/components/dashboard/shared/Pagination"
 import ConfirmModal from "@/components/dashboard/shared/ConfirmModal"
-import DoctorFormModal, {
-  DoctorFormMode,
-} from "@/components/dashboard/admin/doctor/DoctorFormModal"
 import DoctorHeader from "@/components/dashboard/admin/doctor/DoctorHeader"
 import {
   useDeleteDOCTORMutation,

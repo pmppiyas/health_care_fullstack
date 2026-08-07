@@ -164,7 +164,6 @@ export default function PatientDetailWrapper({
   const { data, isLoading, isError } = useGetPATIENTByIdQuery(patientId)
   const [deletePatient, { isLoading: isDeleting }] = useDeletePATIENTMutation()
 
-  const [showEdit, setShowEdit] = useState(false)
   const [showDelete, setShowDelete] = useState(false)
 
   const patient = data?.data
@@ -200,7 +199,6 @@ export default function PatientDetailWrapper({
   const status = patient.status ?? PatientStatus.INACTIVE
   const cfg = statusConfig[status] ?? statusConfig[PatientStatus.INACTIVE]
 
-
   const handleDelete = async () => {
     try {
       await deletePatient(patientId).unwrap()
@@ -231,7 +229,9 @@ export default function PatientDetailWrapper({
             <Button
               variant="outline"
               size="sm"
-              onClick={() => setShowEdit(true)}
+              onClick={() =>
+                router.replace(`/admin/dashboard/patients/${patient._id}/edit`)
+              }
               className="gap-2"
             >
               <Pencil className="size-4" />
@@ -472,17 +472,6 @@ export default function PatientDetailWrapper({
           </div>
         )}
       </div>
-
-      {/* ── edit modal ────────────────────────────────────────────────────── */}
-      <PatientFormModal
-        open={showEdit}
-        mode={"edit" as PatientFormMode}
-        patient={patient}
-        onClose={() => setShowEdit(false)}
-        onSuccess={() => {
-          toast.success("Patient updated successfully!")
-        }}
-      />
 
       {/* ── delete confirm ────────────────────────────────────────────────── */}
       <ConfirmModal
