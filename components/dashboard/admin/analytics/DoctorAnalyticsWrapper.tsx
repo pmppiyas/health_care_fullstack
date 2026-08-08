@@ -20,37 +20,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import PageHeader from "@/components/dashboard/shared/PageHeader"
 import { useDoctorAnalyticsQuery } from "@/redux/features/analytics.api"
 import { MONTH_NAMES } from "@/constant/public.constant.meta"
-import DoctorAnalyticsSkeleton from "@/components/dashboard/admin/analytics/DoctorAnalyticsSkeleton"
-import DoctorAnalyticsError from "@/components/dashboard/admin/analytics/DoctorAnalyticsError"
-
-type StatCardProps = {
-  title: string
-  value: string | number
-  description: string
-  icon: React.ElementType
-}
-
-function StatCard({ title, value, description, icon: Icon }: StatCardProps) {
-  return (
-    <Card className="w-full rounded-2xl">
-      <CardContent className="flex items-center justify-between gap-4 p-5">
-        <div className="min-w-0 space-y-1">
-          <p className="truncate text-sm text-muted-foreground">{title}</p>
-
-          <p className="text-2xl font-bold tracking-tight">{value}</p>
-
-          <p className="truncate text-xs text-muted-foreground">
-            {description}
-          </p>
-        </div>
-
-        <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-primary/10">
-          <Icon className="size-5 text-primary" />
-        </div>
-      </CardContent>
-    </Card>
-  )
-}
+import ErrorPage from "@/components/dashboard/shared/ErrorPage"
+import StatCard from "@/components/dashboard/shared/StatCard"
+import AnalyticsSkeleton from "@/components/dashboard/admin/analytics/AnalyticsSkeleton"
 
 const PIE_COLORS = ["hsl(var(--primary))", "hsl(var(--muted-foreground))"]
 
@@ -62,12 +34,24 @@ export default function DoctorAnalyticsWrapper() {
     isError,
   } = useDoctorAnalyticsQuery()
 
-  if (isLoading) {
-    return <DoctorAnalyticsSkeleton />
+  if (isLoading || isFetching) {
+    return (
+      <AnalyticsSkeleton
+        title="Doctor Analytics"
+        description={
+          isLoading ? "Loading Analytices..." : "Loading Analytices... "
+        }
+      />
+    )
   }
 
   if (isError || !analytics) {
-    return <DoctorAnalyticsError />
+    return (
+      <ErrorPage
+        head="Doctor Analytics"
+        description="Loading Analytices Faild!"
+      />
+    )
   }
 
   const {
@@ -109,15 +93,12 @@ export default function DoctorAnalyticsWrapper() {
     <div className="w-full space-y-6">
       <PageHeader
         title="Doctor Analytics"
-        description="Monitor doctor growth, availability, specialization, and patient workload."
+        description={
+          isFetching
+            ? "Updating analytics..."
+            : "Monitor doctor growth, availability, specialization, and patient workload."
+        }
       />
-
-      {/* Optional fetching indicator */}
-      {isFetching && (
-        <div className="text-xs text-muted-foreground">
-          Updating analytics...
-        </div>
-      )}
 
       {/* Stats */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">

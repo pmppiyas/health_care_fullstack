@@ -1,7 +1,10 @@
 import {
   DoctorAnalyticsResponse,
   DoctorAnalyticsData,
+  PatientAnalyticsResponse,
+  PatientAnalyticsData,
 } from "@/interfaces/analytics.interface"
+
 import { baseApi } from "@/redux/baseApi"
 
 export const analyticsApi = baseApi.injectEndpoints({
@@ -11,10 +14,24 @@ export const analyticsApi = baseApi.injectEndpoints({
         url: "/api/analytics/doctors",
         method: "GET",
       }),
+
       providesTags: ["DOCTOR_ANALYTICS"],
+
       transformResponse: (res: DoctorAnalyticsResponse) => res.data,
+    }),
+
+    patientAnalytics: builder.query<PatientAnalyticsData, void>({
+      query: () => ({
+        url: "/api/analytics/patients",
+        method: "GET",
+      }),
+
+      providesTags: ["PATIENT_ANALYTICS"],
+
+      transformResponse: (res: PatientAnalyticsResponse) => res.data,
     }),
   }),
 })
 
-export const { useDoctorAnalyticsQuery } = analyticsApi
+export const { useDoctorAnalyticsQuery, usePatientAnalyticsQuery } =
+  analyticsApi

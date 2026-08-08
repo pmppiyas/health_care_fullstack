@@ -1,19 +1,22 @@
 import PageHeader from "@/components/dashboard/shared/PageHeader"
 import { Card, CardContent } from "@/components/ui/card"
 
-const DoctorAnalyticsError = () => {
+const ErrorPage = ({
+  head,
+  description,
+}: {
+  head: string
+  description: string
+}) => {
   return (
     <div className="w-full space-y-6">
-      <PageHeader
-        title="Doctor Analytics"
-        description="Monitor doctor growth, availability, specialization, and patient workload."
-      />
+      <PageHeader title={head} description={description} />
 
       <Card className="rounded-2xl">
         <CardContent className="flex min-h-60 items-center justify-center">
           <div className="text-center">
             <p className="font-medium text-destructive">
-              Failed to load doctor analytics
+              Failed to load {head.toLocaleLowerCase()}
             </p>
 
             <p className="mt-1 text-sm text-muted-foreground">
@@ -26,4 +29,4 @@ const DoctorAnalyticsError = () => {
   )
 }
 
-export default DoctorAnalyticsError
+export default ErrorPage

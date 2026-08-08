@@ -125,6 +125,136 @@ const getDoctorAnalytics = async () => {
   }
 }
 
+const getPatientAnalytics = async () => {
+  const [
+    totalPatients,
+    activePatients,
+    followUpPatients,
+    newPatients,
+    conditionStats,
+    doctorPatientStats,
+    monthlyPatientStats,
+  ] = await Promise.all([
+    Patient.countDocuments(),
+
+    Patient.countDocuments({
+      status: "Active",
+    }),
+
+    Patient.countDocuments({
+      status: "Follow-up",
+    }),
+
+    Patient.countDocuments({
+      createdAt: {
+        $gte: new Date(new Date().getFullYear(), 0, 1),
+      },
+    }),
+
+    Patient.aggregate([
+      {
+        $group: {
+          _id: "$condition",
+          count: {
+            $sum: 1,
+          },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          condition: "$_id",
+          count: 1,
+        },
+      },
+      {
+        $sort: {
+          count: -1,
+        },
+      },
+    ]),
+
+    Doctor.aggregate([
+      {
+        $lookup: {
+          from: "patients",
+          localField: "patientIds",
+          foreignField: "_id",
+          as: "patients",
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          name: 1,
+          specialization: 1,
+          patientCount: {
+            $size: "$patients",
+          },
+        },
+      },
+      {
+        $sort: {
+          patientCount: -1,
+        },
+      },
+    ]),
+
+    Patient.aggregate([
+      {
+        $match: {
+          createdAt: {
+            $exists: true,
+          },
+        },
+      },
+      {
+        $group: {
+          _id: {
+            year: {
+              $year: "$createdAt",
+            },
+            month: {
+              $month: "$createdAt",
+            },
+          },
+          count: {
+            $sum: 1,
+          },
+        },
+      },
+      {
+        $sort: {
+          "_id.year": 1,
+          "_id.month": 1,
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          year: "$_id.year",
+          month: "$_id.month",
+          count: 1,
+        },
+      },
+    ]),
+  ])
+
+  return {
+    summary: {
+      totalPatients,
+      activePatients,
+      followUpPatients,
+      newPatients,
+    },
+
+    conditionStats,
+    doctorPatientStats,
+    monthlyPatientStats,
+  }
+}
+
 export const AnalyticsServices = {
   getDoctorAnalytics,
+  getPatientAnalytics,
 }

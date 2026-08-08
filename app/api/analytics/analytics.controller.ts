@@ -13,6 +13,18 @@ const getDoctorAnalytics = async () => {
   })
 }
 
+const getPatientAnalytics = async () => {
+  const result = await AnalyticsServices.getPatientAnalytics()
+
+  return sendResponse({
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "Pateints analytics retrieved successfully",
+    data: result,
+  })
+}
+
 export const AnalyticsController = {
   getDoctorAnalytics,
+  getPatientAnalytics,
 }

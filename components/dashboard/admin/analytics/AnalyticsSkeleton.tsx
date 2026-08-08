@@ -1,13 +1,16 @@
 import PageHeader from "@/components/dashboard/shared/PageHeader"
 import { Card, CardContent } from "@/components/ui/card"
 
-const DoctorAnalyticsSkeleton = () => {
+const AnalyticsSkeleton = ({
+  title,
+  description,
+}: {
+  title: string
+  description: string
+}) => {
   return (
     <div className="w-full space-y-6">
-      <PageHeader
-        title="Doctor Analytics"
-        description="Monitor doctor growth, availability, specialization, and patient workload."
-      />
+      <PageHeader title={title} description={description} />
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {Array.from({ length: 4 }).map((_, index) => (
@@ -32,4 +35,4 @@ const DoctorAnalyticsSkeleton = () => {
   )
 }
 
-export default DoctorAnalyticsSkeleton
+export default AnalyticsSkeleton
