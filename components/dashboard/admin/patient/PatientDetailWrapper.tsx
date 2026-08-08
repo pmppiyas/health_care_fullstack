@@ -27,9 +27,6 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
 import ConfirmModal from "@/components/dashboard/shared/ConfirmModal"
-import PatientFormModal, {
-  PatientFormMode,
-} from "@/components/dashboard/admin/patient/PatientFormModal"
 
 import {
   useGetPATIENTByIdQuery,
