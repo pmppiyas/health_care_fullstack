@@ -487,7 +487,7 @@ export default function PatientAnalyticsWrapper() {
                     )
 
                     return (
-                      <tr key={doctor.id} className="border-b last:border-0">
+                      <tr key={doctor._id} className="border-b last:border-0">
                         <td className="px-2 py-4 font-medium whitespace-nowrap">
                           {doctor.name}
                         </td>
@@ -569,7 +569,7 @@ export default function PatientAnalyticsWrapper() {
 
                 <tbody>
                   {doctorPatientStats.map((doctor, index) => (
-                    <tr key={doctor.id} className="border-b last:border-0">
+                    <tr key={doctor._id} className="border-b last:border-0">
                       <td className="px-2 py-4 text-muted-foreground">
                         {index + 1}
                       </td>

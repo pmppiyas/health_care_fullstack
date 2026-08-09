@@ -19,6 +19,11 @@ export const adminRoutes: RouteSection[] = [
         iconName: "LayoutDashboard",
       },
       {
+        title: "Appointments",
+        href: "/admin/dashboard/appointments",
+        iconName: "CalendarCheck",
+      },
+      {
         title: "Doctors",
         href: "/admin/dashboard/doctors",
         iconName: "Stethoscope",
