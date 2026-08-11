@@ -21,10 +21,10 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
 import {
+  Appointment,
   AppointmentStatus,
   AppointmentType,
-  IAppointment,
-} from "@/app/api/appointment/appointment.interface"
+} from "@/interfaces/appointment.interface"
 
 import {
   useCreateAppointmentMutation,
@@ -51,23 +51,7 @@ type PatientOption = {
   status?: string
 }
 
-type AppointmentWithId = IAppointment & {
-  _id?: string
-  doctorId:
-    | string
-    | {
-        _id: string
-        name?: string
-        specialization?: string
-      }
-  patientId:
-    | string
-    | {
-        _id: string
-        name?: string
-        condition?: string
-      }
-}
+type AppointmentWithId = Appointment
 
 interface AppointmentAddEditFormProps {
   mode: AppointmentFormMode
@@ -89,8 +73,13 @@ type AppointmentFormValues = {
   notes?: string
 }
 
-function getId(value: string | { _id: string }) {
-  return typeof value === "string" ? value : value._id
+function getId(value: unknown): string {
+  if (typeof value === "string") return value
+  if (value && typeof value === "object") {
+    if ("_id" in value) return String((value as { _id: unknown })._id)
+    return String(value)
+  }
+  return ""
 }
 
 function appointmentToForm(

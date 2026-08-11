@@ -2,6 +2,7 @@
 
 import { useGetPATIENTByIdQuery } from "@/redux/features/patient.api"
 import PatientAddEditForm from "./PatientAddEditForm"
+import CreatePatientHeader from "./CreatePatientHeader"
 
 interface PatientAddEditWrapperProps {
   patientId: string
@@ -24,5 +25,11 @@ export default function PatientAddEditWrapper({
     )
   }
 
-  return <PatientAddEditForm mode="edit" patient={data.data} />
+  return (
+    <div>
+      <CreatePatientHeader mode="edit" />
+      <PatientAddEditForm mode="edit" patient={data.data} />
+    </div>
+  )
 }
+

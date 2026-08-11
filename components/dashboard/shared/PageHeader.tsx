@@ -28,48 +28,55 @@ const PageHeader = ({
   components,
 }: PageHeaderProps) => {
   return (
-    <header className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <header className="flex w-full flex-wrap items-center justify-between gap-3 py-4">
       {/* Title */}
-      <div className="flex items-center gap-3">
+      <div className="flex min-w-0 flex-1 items-center gap-3">
         {icon && (
-          <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+          <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
             {icon}
           </div>
         )}
 
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">{title}</h1>
+        <div className="min-w-0">
+          <h1 className="truncate text-xl font-bold tracking-tight sm:text-2xl">
+            {title}
+          </h1>
 
           {description && (
-            <p className="text-sm text-muted-foreground">{description}</p>
+            <p className="truncate text-sm text-muted-foreground">
+              {description}
+            </p>
           )}
         </div>
       </div>
 
-      <div className="flex flex-wrap items-center gap-2">
-        {/* Components */}
-        {components && (
-          <div className="flex items-center gap-2">{components}</div>
-        )}
+      {/* Components + Actions */}
+      {(components || actions.length > 0) && (
+        <div className="ml-auto flex shrink-0 flex-wrap items-center justify-end gap-2">
+          {/* Components */}
+          {components && (
+            <div className="flex shrink-0 items-center gap-2">{components}</div>
+          )}
 
-        {/* Actions */}
-        {actions.length > 0 && (
-          <div className="flex flex-wrap items-center gap-2">
-            {actions.map((action, index) => (
-              <Button
-                key={index}
-                size={action.size ?? "default"}
-                variant={action.variant ?? "default"}
-                onClick={action.onClick}
-                className="gap-2"
-              >
-                {action.icon}
-                {action.label}
-              </Button>
-            ))}
-          </div>
-        )}
-      </div>
+          {/* Actions */}
+          {actions.length > 0 && (
+            <div className="flex shrink-0 flex-wrap items-center gap-2">
+              {actions.map((action, index) => (
+                <Button
+                  key={index}
+                  size={action.size ?? "default"}
+                  variant={action.variant ?? "default"}
+                  onClick={action.onClick}
+                  className="shrink-0 gap-2"
+                >
+                  {action.icon}
+                  <span>{action.label}</span>
+                </Button>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
     </header>
   )
 }

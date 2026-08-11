@@ -7,11 +7,11 @@ import AppointmentStatusChart from "./AppointmentStatusChart"
 import MonthlyTrendChart from "./MonthlyTrendChart"
 import RecentAppointments from "./RecentAppointments"
 import { Skeleton } from "@/components/ui/skeleton"
-import { LayoutDashboard } from "lucide-react"
+import OverviewHeader from "@/components/dashboard/admin/overview/OverviewHeader"
 
 function OverviewSkeleton() {
   return (
-    <div className="space-y-6 animate-pulse">
+    <div className="animate-pulse space-y-6">
       <Skeleton className="h-10 w-72 rounded-xl" />
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {Array.from({ length: 4 }).map((_, i) => (
@@ -25,13 +25,6 @@ function OverviewSkeleton() {
       <Skeleton className="h-72 rounded-2xl" />
     </div>
   )
-}
-
-function getGreeting() {
-  const hour = new Date().getHours()
-  if (hour < 12) return "Good morning"
-  if (hour < 17) return "Good afternoon"
-  return "Good evening"
 }
 
 export default function OverviewWrapper() {
@@ -51,19 +44,7 @@ export default function OverviewWrapper() {
   return (
     <div className="space-y-6">
       {/* Greeting header */}
-      <div className="flex items-center gap-3">
-        <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-sm">
-          <LayoutDashboard className="size-5" />
-        </div>
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">
-            {getGreeting()}, {user?.name ?? "Admin"} 👋
-          </h1>
-          <p className="text-sm text-muted-foreground">
-            Here&apos;s what&apos;s happening in your clinic today.
-          </p>
-        </div>
-      </div>
+      <OverviewHeader user={user} />
 
       {/* Stat cards */}
       <StatsGrid stats={data.stats} />

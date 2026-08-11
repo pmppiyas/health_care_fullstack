@@ -82,7 +82,7 @@ export default function AppointmentStatusChart({
               color: "hsl(var(--foreground))",
               fontSize: "13px",
             }}
-            formatter={(value: number, name: string) => [value, name]}
+            formatter={(value: any, name: any) => [value ?? 0, name ?? ""]}
           />
           <Legend
             iconType="circle"

@@ -1,7 +1,7 @@
 "use client"
 
 import PageHeader from "@/components/dashboard/shared/PageHeader"
-import { Calendar, CalendarDays } from "lucide-react"
+import { Calendar, CalendarDays, MoveLeftIcon } from "lucide-react"
 import { useRouter } from "next/navigation"
 
 const CreateAppointmentHeader = () => {
@@ -17,6 +17,13 @@ const CreateAppointmentHeader = () => {
           label: "View All",
           icon: <Calendar className="size-4" />,
           onClick: () => router.push("/admin/dashboard/appointments"),
+          variant: "outline",
+        },
+        {
+          label: "Back",
+          icon: <MoveLeftIcon className="size-4" />,
+          onClick: () => router.back(),
+          variant: "ghost",
         },
       ]}
     />

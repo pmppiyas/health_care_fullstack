@@ -165,25 +165,27 @@ export const getAppointmentColumns = ({
         <span
           className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[10px] font-medium ${cfg?.className ?? "border-border bg-muted text-muted-foreground"}`}
         >
-          <span className={`size-1.5 rounded-full ${cfg?.dot ?? "bg-muted-foreground"}`} />
+          <span
+            className={`size-1.5 rounded-full ${cfg?.dot ?? "bg-muted-foreground"}`}
+          />
           {cfg?.label ?? row.status}
         </span>
       )
     },
   },
 
-  {
-    key: "reason",
-    header: "Reason",
-    render: (row) => (
-      <span
-        className="block max-w-40 truncate text-xs text-muted-foreground"
-        title={row.reason ?? ""}
-      >
-        {row.reason || "—"}
-      </span>
-    ),
-  },
+  // {
+  //   key: "reason",
+  //   header: "Reason",
+  //   render: (row) => (
+  //     <span
+  //       className="block max-w-40 truncate text-xs text-muted-foreground"
+  //       title={row.reason ?? ""}
+  //     >
+  //       {row.reason || "—"}
+  //     </span>
+  //   ),
+  // },
 
   {
     key: "actions",
@@ -205,7 +207,10 @@ export const getAppointmentColumns = ({
         <DropdownMenuContent align="end" className="w-44">
           <DropdownMenuItem
             className="cursor-pointer gap-2"
-            onClick={(e) => { e.stopPropagation(); onView(row) }}
+            onClick={(e) => {
+              e.stopPropagation()
+              onView(row)
+            }}
           >
             <Eye className="size-3.5" />
             View
@@ -213,7 +218,10 @@ export const getAppointmentColumns = ({
 
           <DropdownMenuItem
             className="cursor-pointer gap-2"
-            onClick={(e) => { e.stopPropagation(); onEdit(row) }}
+            onClick={(e) => {
+              e.stopPropagation()
+              onEdit(row)
+            }}
           >
             <Pencil className="size-3.5" />
             Edit
@@ -223,7 +231,10 @@ export const getAppointmentColumns = ({
             row.status !== AppointmentStatus.COMPLETED && (
               <DropdownMenuItem
                 className="cursor-pointer gap-2 text-orange-600 focus:bg-orange-500/10 focus:text-orange-600"
-                onClick={(e) => { e.stopPropagation(); onCancel(row) }}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  onCancel(row)
+                }}
               >
                 <XCircle className="size-3.5" />
                 Cancel
@@ -234,7 +245,10 @@ export const getAppointmentColumns = ({
 
           <DropdownMenuItem
             className="cursor-pointer gap-2 text-destructive focus:bg-destructive/10 focus:text-destructive"
-            onClick={(e) => { e.stopPropagation(); onDelete(row) }}
+            onClick={(e) => {
+              e.stopPropagation()
+              onDelete(row)
+            }}
           >
             <Trash2 className="size-3.5" />
             Delete

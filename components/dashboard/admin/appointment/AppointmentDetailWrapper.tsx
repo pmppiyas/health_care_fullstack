@@ -144,11 +144,9 @@ export default function AppointmentDetailWrapper({
   const [showDelete, setShowDelete] = useState(false)
   const [showCancel, setShowCancel] = useState(false)
 
-  const appointment = data as Appointment | undefined
-
   if (isLoading) return <AppointmentDetailSkeleton />
 
-  if (isError || !appointment) {
+  if (isError || !data) {
     return (
       <div className="flex flex-col items-center justify-center gap-4 py-24 text-center">
         <div className="flex size-16 items-center justify-center rounded-full bg-destructive/10">
@@ -173,6 +171,8 @@ export default function AppointmentDetailWrapper({
       </div>
     )
   }
+
+  const appointment = data
 
   const statusCfg =
     statusConfig[appointment.status as AppointmentStatus] ??

@@ -312,18 +312,7 @@ export default function DoctorAddEditForm({
 
   return (
     <div className="space-y-6">
-      {/* ── top bar ──────────────────────────────────────────────────────── */}
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <Button asChild variant="outline" size="sm" className="gap-2">
-          <Link href="/admin/dashboard/doctors">
-            <ArrowLeft className="size-4" />
-            Back
-          </Link>
-        </Button>
-      </div>
-
       <form onSubmit={handleSubmit} noValidate className="space-y-6">
-        {/* ── hero card (matches detail page banner) ────────────────────── */}
         <div className="overflow-hidden rounded-2xl border border-border bg-card">
           {/* gradient banner */}
           <div className="relative h-24 bg-linear-to-r from-primary/20 via-primary/10 to-transparent">

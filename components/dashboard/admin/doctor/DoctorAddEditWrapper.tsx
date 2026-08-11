@@ -2,6 +2,7 @@
 
 import { useGetDOCTORByIdQuery } from "@/redux/features/doctor.api"
 import DoctorAddEditForm from "./DoctorAddEditForm"
+import CreateDoctorHeader from "./CreateDoctorHeader"
 
 interface DoctorAddEditWrapperProps {
   doctorId: string
@@ -24,5 +25,11 @@ export default function DoctorAddEditWrapper({
     )
   }
 
-  return <DoctorAddEditForm mode="edit" doctor={data.data} />
+  return (
+    <div>
+      <CreateDoctorHeader mode="edit" />
+      <DoctorAddEditForm mode="edit" doctor={data.data} />
+    </div>
+  )
 }
+

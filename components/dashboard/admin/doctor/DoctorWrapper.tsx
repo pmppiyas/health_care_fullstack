@@ -6,7 +6,6 @@ import { toast } from "sonner"
 import DataTable from "@/components/dashboard/shared/DataTable"
 import Pagination from "@/components/dashboard/shared/Pagination"
 import ConfirmModal from "@/components/dashboard/shared/ConfirmModal"
-import DoctorHeader from "@/components/dashboard/admin/doctor/DoctorHeader"
 import {
   useDeleteDOCTORMutation,
   useGetDOCTORsQuery,
@@ -14,6 +13,7 @@ import {
 import { DoctorWithId } from "@/interfaces/doctor.interface"
 import { getDoctorColumns } from "@/components/dashboard/admin/doctor/DoctorColumn"
 import { P_LIMIT, P_PAGE, P_SEARCH } from "@/constant/meta.constant"
+import DoctorHeader from "@/components/dashboard/admin/doctor/DoctorHeader"
 
 export default function DoctorWrapper() {
   const router = useRouter()
@@ -112,7 +112,6 @@ export default function DoctorWrapper() {
   return (
     <div className="space-y-4">
       <DoctorHeader />
-
       <DataTable<DoctorWithId>
         columns={columns}
         data={doctors}

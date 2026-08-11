@@ -1,13 +1,12 @@
 "use client"
 
 import { Suspense, use } from "react"
+import { Skeleton } from "@/components/ui/skeleton"
+import AppointmentAddEditForm from "@/components/dashboard/admin/appointment/AppointmentAddEditForm"
+import CreateAppointmentHeader from "@/components/dashboard/admin/appointment/CreateAppointmentHeader"
 import { useGetAppointmentByIdQuery } from "@/redux/features/appointment.api"
 import { useGetDOCTORsQuery } from "@/redux/features/doctor.api"
 import { useGetPATIENTsQuery } from "@/redux/features/patient.api"
-import AppointmentAddEditForm from "@/components/dashboard/admin/appointment/AppointmentAddEditForm"
-import CreateAppointmentHeader from "@/components/dashboard/admin/appointment/CreateAppointmentHeader"
-import { Skeleton } from "@/components/ui/skeleton"
-import { Appointment } from "@/interfaces/appointment.interface"
 
 function EditSkeleton() {
   return (
@@ -32,6 +31,7 @@ function EditContent({ appointmentId }: { appointmentId: string }) {
   const { data: patientsRes, isLoading: pLoading } = useGetPATIENTsQuery({})
 
   if (aLoading || dLoading || pLoading) return <EditSkeleton />
+
   if (!appointment) {
     return (
       <p className="py-16 text-center text-sm text-muted-foreground">
@@ -44,18 +44,11 @@ function EditContent({ appointmentId }: { appointmentId: string }) {
   const patients = patientsRes?.data ?? []
 
   return (
-    <div>
+    <div className="space-y-0">
       <CreateAppointmentHeader />
       <AppointmentAddEditForm
         mode="edit"
-        appointment={
-          appointment as Appointment & { _id: string } & {
-            doctorId:
-              string | { _id: string; name?: string; specialization?: string }
-            patientId:
-              string | { _id: string; name?: string; condition?: string }
-          }
-        }
+        appointment={appointment}
         doctors={doctors}
         patients={patients}
       />
