@@ -26,10 +26,9 @@ export const createAppointmentValidationSchema = z.object({
   notes: z.string().max(1000, "Notes cannot exceed 1000 characters").optional(),
 })
 
-export const updateAppointmentValidationSchema = z
-  .object({
-    patientId: z.string().min(1, "Patient ID is required"),
-    doctorId: z.string().min(1, "Doctor ID is required"),
+export const updateAppointmentValidationSchema = z.object({
+    patientId: z.string().min(1, "Patient ID is required").optional(),
+    doctorId: z.string().min(1, "Doctor ID is required").optional(),
     appointmentDate: z.coerce.date().optional(),
 
     appointmentTime: z
@@ -54,7 +53,6 @@ export const updateAppointmentValidationSchema = z
       .max(1000, "Notes cannot exceed 1000 characters")
       .optional(),
   })
-  .strict()
 
 export type CreateAppointmentInput = z.infer<
   typeof createAppointmentValidationSchema

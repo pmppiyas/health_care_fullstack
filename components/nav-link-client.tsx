@@ -10,6 +10,9 @@ import {
   UserRoundPlus,
   Settings,
   PhoneCall,
+  CalendarCheck,
+  ChartNoAxesColumn,
+  ChartPie,
   type LucideIcon,
 } from "lucide-react"
 
@@ -31,23 +34,15 @@ const icons: Record<string, LucideIcon> = {
   UserRoundPlus,
   Settings,
   PhoneCall,
+  CalendarCheck,
+  ChartNoAxesColumn,
+  ChartPie,
 }
 
-/**
- * Step 1: A route "matches" the current pathname if it's an exact match
- * or the pathname is nested under it (e.g. href=/doctors matches
- * /doctors/123, /doctors/create, etc).
- */
 function routeMatches(pathname: string, href: string) {
   return pathname === href || pathname.startsWith(`${href}/`)
 }
 
-/**
- * Step 2: Among ALL sibling hrefs that match the current pathname,
- * find the most specific one (longest string = most nested/specific route).
- * Only that href should be considered "active" — this is what stops
- * "/doctors" from lighting up while we're actually on "/doctors/create".
- */
 function isBestMatch(pathname: string, href: string, allHrefs: string[]) {
   if (!routeMatches(pathname, href)) return false
 
@@ -71,8 +66,6 @@ const NavLink = ({
 
   const isExact = exact || href === "/admin/dashboard"
 
-  // Step 3: exact-match links behave as before; prefix-match links now
-  // resolve against siblings instead of blindly using startsWith.
   const active = isExact
     ? pathname === href
     : isBestMatch(pathname, href, allHrefs)

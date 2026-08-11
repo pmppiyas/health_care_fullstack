@@ -3,6 +3,8 @@ import {
   AppointmentArrayResponse,
   AppointmentListResponse,
   AppointmentResponse,
+  CreateAppointmentInput,
+  UpdateAppointmentInput,
 } from "@/interfaces/appointment.interface"
 import { baseApi } from "@/redux/baseApi"
 
@@ -14,17 +16,19 @@ export const appointmentApi = baseApi.injectEndpoints({
         page?: number
         limit?: number
         status?: string
+        search?: string
         doctorId?: string
         patientId?: string
       }
     >({
-      query: ({ page = 1, limit = 10, status, doctorId, patientId }) => ({
-        url: "/api/appointments",
+      query: ({ page = 1, limit = 10, status, search, doctorId, patientId }) => ({
+        url: "/api/appointment",
         method: "GET",
         params: {
           page,
           limit,
           ...(status && { status }),
+          ...(search && { search }),
           ...(doctorId && { doctorId }),
           ...(patientId && { patientId }),
         },
@@ -35,7 +39,7 @@ export const appointmentApi = baseApi.injectEndpoints({
 
     getAppointmentById: builder.query<Appointment, string>({
       query: (appointmentId) => ({
-        url: `/api/appointments/${appointmentId}`,
+        url: `/api/appointment/${appointmentId}`,
         method: "GET",
       }),
 
@@ -44,11 +48,11 @@ export const appointmentApi = baseApi.injectEndpoints({
       providesTags: ["APPOINTMENT"],
     }),
 
-    createAppointment: builder.mutation<Appointment, Partial<Appointment>>({
+    createAppointment: builder.mutation<Appointment, CreateAppointmentInput>({
       query: (data) => ({
-        url: "/api/appointments",
+        url: "/api/appointment",
         method: "POST",
-        body: data,
+        data,
       }),
 
       transformResponse: (res: AppointmentResponse) => res.data,
@@ -60,13 +64,13 @@ export const appointmentApi = baseApi.injectEndpoints({
       Appointment,
       {
         appointmentId: string
-        data: Partial<Appointment>
+        data: UpdateAppointmentInput
       }
     >({
       query: ({ appointmentId, data }) => ({
-        url: `/api/appointments/${appointmentId}`,
+        url: `/api/appointment/${appointmentId}`,
         method: "PATCH",
-        body: data,
+        data,
       }),
 
       transformResponse: (res: AppointmentResponse) => res.data,
@@ -82,9 +86,9 @@ export const appointmentApi = baseApi.injectEndpoints({
       }
     >({
       query: ({ appointmentId, status }) => ({
-        url: `/api/appointments/${appointmentId}/status`,
+        url: `/api/appointment/${appointmentId}/status`,
         method: "PATCH",
-        body: { status },
+        data: { status },
       }),
 
       transformResponse: (res: AppointmentResponse) => res.data,
@@ -94,7 +98,7 @@ export const appointmentApi = baseApi.injectEndpoints({
 
     cancelAppointment: builder.mutation<Appointment, string>({
       query: (appointmentId) => ({
-        url: `/api/appointments/${appointmentId}/cancel`,
+        url: `/api/appointment/${appointmentId}/cancel`,
         method: "PATCH",
       }),
 
@@ -105,7 +109,7 @@ export const appointmentApi = baseApi.injectEndpoints({
 
     deleteAppointment: builder.mutation<Appointment, string>({
       query: (appointmentId) => ({
-        url: `/api/appointments/${appointmentId}`,
+        url: `/api/appointment/${appointmentId}`,
         method: "DELETE",
       }),
 
@@ -122,7 +126,7 @@ export const appointmentApi = baseApi.injectEndpoints({
       }
     >({
       query: ({ doctorId, status }) => ({
-        url: `/api/appointments/doctor/${doctorId}`,
+        url: `/api/appointment/doctor/${doctorId}`,
         method: "GET",
         params: {
           ...(status && { status }),
@@ -142,7 +146,7 @@ export const appointmentApi = baseApi.injectEndpoints({
       }
     >({
       query: ({ patientId, status }) => ({
-        url: `/api/appointments/patient/${patientId}`,
+        url: `/api/appointment/patient/${patientId}`,
         method: "GET",
         params: {
           ...(status && { status }),

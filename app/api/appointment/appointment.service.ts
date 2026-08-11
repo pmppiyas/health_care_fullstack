@@ -8,125 +8,132 @@ import {
 } from "./appointment.validation"
 import { AppError } from "@/lib/error/AppError"
 import { NextRequest } from "next/server"
-import DoctorPatient from "@/app/api/doctor-patient/doctorPatient.model"
+import { AppointmentStatus } from "@/interfaces/appointment.interface"
 
 const createAppointment = async (payload: CreateAppointmentInput) => {
-  const session = await Appointment.startSession()
+  const doctor = await Doctor.findById(payload.doctorId)
 
-  try {
-    let appointment
-
-    await session.withTransaction(async () => {
-      const doctor = await Doctor.findById(payload.doctorId).session(session)
-
-      if (!doctor) {
-        throw new AppError(404, "Doctor not found")
-      }
-
-      const patient = await Patient.findById(payload.patientId).session(session)
-
-      if (!patient) {
-        throw new AppError(404, "Patient not found")
-      }
-
-      const assignment = await DoctorPatient.findOne({
-        doctorId: payload.doctorId,
-        patientId: payload.patientId,
-      }).session(session)
-
-      if (!assignment) {
-        throw new AppError(400, "Patient is not assigned to this doctor")
-      }
-
-      const existingAppointment = await Appointment.findOne({
-        doctorId: payload.doctorId,
-        appointmentDate: payload.appointmentDate,
-        appointmentTime: payload.appointmentTime,
-
-        status: {
-          $nin: ["Cancelled", "Completed"],
-        },
-      }).session(session)
-
-      if (existingAppointment) {
-        throw new AppError(
-          409,
-          "Doctor already has an appointment at this time"
-        )
-      }
-
-      const [createdAppointment] = await Appointment.create(
-        [
-          {
-            doctorId: new Types.ObjectId(payload.doctorId),
-            patientId: new Types.ObjectId(payload.patientId),
-            type: payload.type,
-            appointmentDate: payload.appointmentDate,
-            appointmentTime: payload.appointmentTime,
-            status: payload.status ?? "Scheduled",
-            reason: payload.reason,
-            notes: payload.notes,
-          },
-        ],
-        { session }
-      )
-
-      appointment = createdAppointment
-    })
-
-    return appointment
-  } finally {
-    await session.endSession()
+  if (!doctor) {
+    throw new AppError(404, "Doctor not found")
   }
+
+  const patient = await Patient.findById(payload.patientId)
+
+  if (!patient) {
+    throw new AppError(404, "Patient not found")
+  }
+
+  const existingAppointment = await Appointment.findOne({
+    doctorId: payload.doctorId,
+    appointmentDate: payload.appointmentDate,
+    appointmentTime: payload.appointmentTime,
+    status: {
+      $nin: [AppointmentStatus.CANCELLED, AppointmentStatus.COMPLETED],
+    },
+  })
+
+  if (existingAppointment) {
+    throw new AppError(409, "Doctor already has an appointment at this time")
+  }
+
+  const appointment = await Appointment.create({
+    doctorId: new Types.ObjectId(payload.doctorId),
+    patientId: new Types.ObjectId(payload.patientId),
+    appointmentDate: payload.appointmentDate,
+    appointmentTime: payload.appointmentTime,
+    type: payload.type,
+    status: payload.status ?? AppointmentStatus.SCHEDULED,
+    reason: payload.reason,
+    notes: payload.notes,
+  })
+
+  return appointment
 }
 
 const getAllAppointments = async (req: NextRequest) => {
   const searchParams = req.nextUrl.searchParams
 
   const page = Math.max(Number(searchParams.get("page") ?? "1"), 1)
-
   const limit = Math.min(
     Math.max(Number(searchParams.get("limit") ?? "10"), 1),
     100
   )
-
   const skip = (page - 1) * limit
 
-  const filter: Record<string, unknown> = {}
-
   const status = searchParams.get("status")
-  const doctorId = searchParams.get("doctorId")
-  const patientId = searchParams.get("patientId")
+  const search = searchParams.get("search")?.trim()
 
-  if (status) {
-    filter.status = status
+  // Build aggregation pipeline so we can filter by populated doctor/patient name
+  const pipeline: Record<string, unknown>[] = [
+    // 1. Join doctor
+    {
+      $lookup: {
+        from: "doctors",
+        localField: "doctorId",
+        foreignField: "_id",
+        as: "doctorId",
+        pipeline: [
+          {
+            $project: {
+              name: 1,
+              specialization: 1,
+              hospital: 1,
+              phone: 1,
+              email: 1,
+            },
+          },
+        ],
+      },
+    },
+    { $unwind: { path: "$doctorId", preserveNullAndEmptyArrays: true } },
+
+    // 2. Join patient
+    {
+      $lookup: {
+        from: "patients",
+        localField: "patientId",
+        foreignField: "_id",
+        as: "patientId",
+        pipeline: [
+          {
+            $project: { name: 1, condition: 1, status: 1, phone: 1, email: 1 },
+          },
+        ],
+      },
+    },
+    { $unwind: { path: "$patientId", preserveNullAndEmptyArrays: true } },
+  ]
+
+  // 3. Filter by status
+  const matchStage: Record<string, unknown> = {}
+  if (status) matchStage.status = status
+
+  // 4. Filter by search (doctor name OR patient name)
+  if (search) {
+    matchStage.$or = [
+      { "doctorId.name": { $regex: search, $options: "i" } },
+      { "patientId.name": { $regex: search, $options: "i" } },
+    ]
   }
 
-  if (doctorId) {
-    filter.doctorId = doctorId
+  if (Object.keys(matchStage).length > 0) {
+    pipeline.push({ $match: matchStage })
   }
 
-  if (patientId) {
-    filter.patientId = patientId
-  }
+  // 5. Count total (before pagination)
+  const countPipeline = [...pipeline, { $count: "total" }]
 
-  const [appointments, total] = await Promise.all([
-    Appointment.find(filter)
-      .populate({
-        path: "doctorId",
-        select: "name specialization hospital phone email",
-      })
-      .populate({
-        path: "patientId",
-        select: "name condition status phone email",
-      })
-      .sort({ scheduledAt: -1 })
-      .skip(skip)
-      .limit(limit)
-      .lean(),
+  // 6. Sort + paginate
+  pipeline.push({ $sort: { createdAt: -1 } })
+  pipeline.push({ $skip: skip })
+  pipeline.push({ $limit: limit })
 
-    Appointment.countDocuments(filter),
+  const [appointments, countResult] = await Promise.all([
+    Appointment.aggregate(pipeline),
+    Appointment.aggregate(countPipeline),
   ])
+
+  const total = (countResult[0] as { total?: number } | undefined)?.total ?? 0
 
   return {
     appointments,
@@ -226,21 +233,6 @@ const updateAppointment = async (
 
   if (!appointment) {
     throw new AppError(404, "Appointment not found")
-  }
-
-  const doctorId = appointment.doctorId.toString()
-
-  const patientId = appointment.patientId.toString()
-
-  if (payload.doctorId || payload.patientId) {
-    const assignment = await DoctorPatient.findOne({
-      doctorId,
-      patientId,
-    })
-
-    if (!assignment) {
-      throw new AppError(400, "Patient is not assigned to this doctor")
-    }
   }
 
   const updatedAppointment = await Appointment.findByIdAndUpdate(

@@ -37,7 +37,7 @@ export interface DoctorAnalyticsResponse {
   data: DoctorAnalyticsData
 }
 
-// Patients
+// Patients-------------
 export interface PatientAnalyticsSummary {
   totalPatients: number
   activePatients: number

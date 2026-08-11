@@ -39,6 +39,11 @@ export const adminRoutes: RouteSection[] = [
     title: "Management",
     nav: [
       {
+        title: "Add Appointment",
+        href: "/admin/dashboard/appointments/create",
+        iconName: "UserRoundPlus",
+      },
+      {
         title: "Add Doctor",
         href: "/admin/dashboard/doctors/create",
         iconName: "UserPlus",

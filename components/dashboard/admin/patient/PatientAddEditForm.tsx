@@ -103,9 +103,6 @@ const EMPTY_FORM: FormState = {
   photoUrl: "",
 }
 
-// NOTE: password is intentionally NOT populated here. Patient records
-// returned from the server never include a raw/hashed password field,
-// and edit mode should never touch the account password anyway.
 function patientToForm(p: PatientWithId): FormState {
   return {
     name: p.name ?? "",

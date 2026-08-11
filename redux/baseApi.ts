@@ -11,6 +11,7 @@ export const baseApi = createApi({
     "DOCTOR_ANALYTICS",
     "PATIENT_ANALYTICS",
     "APPOINTMENT",
+    "DASHBOARD",
   ],
   endpoints: () => ({}),
 })
