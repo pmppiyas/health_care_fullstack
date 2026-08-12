@@ -76,7 +76,7 @@ ADMIN_PASS=Admin123!
 SALT_ROUND=12
 
 # JWT
-JWT_ACCESS_TOKEN=your_super_secret_key_minimum_32_characters
+JWT_ACCESS_SECRET=your_super_secret_key_minimum_32_characters
 JWT_ACCESS_EXPIRED=7d
 ```
 
@@ -398,7 +398,7 @@ export function withAuth(...allowedRoles: Role[]) {
 
         if (!token) return json({ message: "No token" }, 401)
 
-        const payload = verifyToken(token, ENV.JWT_ACCESS_TOKEN) as AuthUser
+        const payload = verifyToken(token, ENV.JWT_ACCESS_SECRET) as AuthUser
 
         if (!allowedRoles.includes(payload.role))
           return json({ message: "Forbidden" }, 403)

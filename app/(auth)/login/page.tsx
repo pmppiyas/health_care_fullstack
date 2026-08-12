@@ -27,14 +27,8 @@ const loginSchema = z.object({
 
 type LoginFormValues = z.infer<typeof loginSchema>
 
-const getDashboardPath = (role: Role) => {
-  switch (role) {
-    case Role.ADMIN:
-      return "/admin/dashboard"
-    default:
-      return "/"
-  }
-}
+import { getDefaultDashboardRoutes } from "@/lib/auth/auth"
+
 
 const LoginPage = () => {
   const router = useRouter()
@@ -65,7 +59,7 @@ const LoginPage = () => {
       }).unwrap()
 
       toast.success(response.message)
-      router.push(getDashboardPath(response.data.user.role))
+      router.push(getDefaultDashboardRoutes(response.data.user.role))
     } catch (error) {
       const message =
         (error as { data?: { message?: string } })?.data?.message ??

@@ -333,7 +333,7 @@ export default function AppointmentAddEditForm({
                     field.value instanceof Date && !isNaN(field.value.getTime())
                       ? field.value.toISOString().split("T")[0]
                       : typeof field.value === "string" && field.value
-                        ? field.value.split("T")[0]
+                        ? (field.value as string).split("T")[0]
                         : ""
                   return (
                     <Input

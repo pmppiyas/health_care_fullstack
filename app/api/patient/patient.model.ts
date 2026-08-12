@@ -165,7 +165,6 @@ const patientSchema = new Schema<IPatient>(
   }
 )
 
-patientSchema.index({ userId: 1 })
 patientSchema.index({ status: 1 })
 patientSchema.index({ admissionDate: -1 })
 patientSchema.index({ doctorIds: 1 })

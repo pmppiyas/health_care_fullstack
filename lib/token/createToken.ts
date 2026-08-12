@@ -13,7 +13,7 @@ export const createAccessToken = (payload: AuthUser): string => {
       role: payload.role,
       email: payload.email,
     },
-    ENV.JWT_ACCESS_TOKEN,
+    ENV.JWT_ACCESS_SECRET,
     options
   )
 }

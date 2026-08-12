@@ -22,6 +22,10 @@ const getOverview = async () => {
     appointmentsByType,
     monthlyAppointments,
     recentAppointments,
+    doctorsBySpecialization,
+    doctorAvailability,
+    patientsByStatus,
+    patientsByCondition,
   ] = await Promise.all([
     Doctor.countDocuments(),
 
@@ -120,6 +124,47 @@ const getOverview = async () => {
       .populate({ path: "doctorId", select: "name specialization" })
       .populate({ path: "patientId", select: "name condition" })
       .lean(),
+
+    // Doctors grouped by specialization
+    Doctor.aggregate([
+      { $group: { _id: "$specialization", count: { $sum: 1 } } },
+      { $project: { _id: 0, specialization: "$_id", count: 1 } },
+      { $sort: { count: -1 } },
+      { $limit: 6 },
+    ]),
+
+    // Doctor availability split
+    Doctor.aggregate([
+      {
+        $group: {
+          _id: "$isAvailable",
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          available: "$_id",
+          count: 1,
+        },
+      },
+    ]),
+
+    // Patients grouped by status
+    Patient.aggregate([
+      { $group: { _id: "$status", count: { $sum: 1 } } },
+      { $project: { _id: 0, status: "$_id", count: 1 } },
+      { $sort: { count: -1 } },
+    ]),
+
+    // Top 6 patient conditions
+    Patient.aggregate([
+      { $match: { condition: { $exists: true, $ne: "" } } },
+      { $group: { _id: "$condition", count: { $sum: 1 } } },
+      { $project: { _id: 0, condition: "$_id", count: 1 } },
+      { $sort: { count: -1 } },
+      { $limit: 6 },
+    ]),
   ])
 
   return {
@@ -137,6 +182,10 @@ const getOverview = async () => {
     appointmentsByType,
     monthlyAppointments,
     recentAppointments,
+    doctorsBySpecialization,
+    doctorAvailability,
+    patientsByStatus,
+    patientsByCondition,
   }
 }
 

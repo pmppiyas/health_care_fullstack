@@ -27,7 +27,6 @@ const Navbar = () => {
 
   const isLoggedIn = !!data?.data
 
-  console.log("Is user logged in?", isLoggedIn)
   const dblink = isLoggedIn ? getDashboardRoute(data?.data?.role) : "/login"
 
   return (

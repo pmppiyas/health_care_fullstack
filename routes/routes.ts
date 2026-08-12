@@ -1,3 +1,5 @@
+import { Role } from "@/app/api/user/user.interface"
+
 export type NavItem = {
   title: string
   href: string
@@ -87,12 +89,56 @@ export const adminRoutes: RouteSection[] = [
   },
 ]
 
+export const doctorRoutes: RouteSection[] = [
+  {
+    title: "Main Menu",
+    nav: [
+      {
+        title: "Overview",
+        href: "/doctor/dashboard",
+        iconName: "LayoutDashboard",
+      },
+      {
+        title: "Appointments",
+        href: "/doctor/dashboard/appointments",
+        iconName: "CalendarCheck",
+      },
+      {
+        title: "My Patients",
+        href: "/doctor/dashboard/patients",
+        iconName: "Users",
+      },
+    ],
+  },
+]
+
 export const getRoutesByRole = (role: string): RouteSection[] => {
   switch (role) {
+    case Role.ADMIN:
     case "ADMIN":
       return adminRoutes
-
+    case Role.DOCTOR:
+    case "DOCTOR":
+      return doctorRoutes
     default:
       return []
+  }
+}
+
+export const getDefaultDashboardRoutes = (
+  role?: string | Role | null
+): string => {
+  switch (role) {
+    case Role.ADMIN:
+    case "ADMIN":
+      return "/admin/dashboard"
+    case Role.DOCTOR:
+    case "DOCTOR":
+      return "/doctor/dashboard"
+    case Role.PATIENT:
+    case "PATIENT":
+      return "/patient/dashboard"
+    default:
+      return "/"
   }
 }

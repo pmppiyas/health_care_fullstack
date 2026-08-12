@@ -47,7 +47,7 @@ export function withAuth(...allowedRoles: Role[]) {
 
         const verifiedToken = verifyToken(
           token,
-          ENV.JWT_ACCESS_TOKEN
+          ENV.JWT_ACCESS_SECRET
         ) as AuthUser
 
         if (!verifiedToken?.id || !verifiedToken?.role) {
@@ -115,4 +115,3 @@ export function withAuth(...allowedRoles: Role[]) {
       }
     }
 }
-

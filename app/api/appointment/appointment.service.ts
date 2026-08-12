@@ -129,8 +129,8 @@ const getAllAppointments = async (req: NextRequest) => {
   pipeline.push({ $limit: limit })
 
   const [appointments, countResult] = await Promise.all([
-    Appointment.aggregate(pipeline),
-    Appointment.aggregate(countPipeline),
+    Appointment.aggregate(pipeline as any),
+    Appointment.aggregate(countPipeline as any),
   ])
 
   const total = (countResult[0] as { total?: number } | undefined)?.total ?? 0
