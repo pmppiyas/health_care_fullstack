@@ -9,6 +9,11 @@ import {
   GetDoctorsResponse,
   MutateDoctorResponse,
 } from "@/interfaces/doctor.interface"
+import { GetPatientsResponse } from "@/interfaces/patient.interface"
+import {
+  DoctorDashboardOverviewData,
+  DoctorDashboardOverviewResponse,
+} from "@/interfaces/dashboard.interface"
 import { baseApi } from "@/redux/baseApi"
 
 export const doctorApi = baseApi.injectEndpoints({
@@ -75,6 +80,31 @@ export const doctorApi = baseApi.injectEndpoints({
         { type: "DOCTOR", id: "LIST" },
       ],
     }),
+
+    getDoctorMyPatients: builder.query<
+      GetPatientsResponse,
+      { page?: number; limit?: number; search?: string }
+    >({
+      query: ({ page = 1, limit = 10, search } = {}) => ({
+        url: "/api/doctor/me/patients",
+        method: "GET",
+        params: {
+          page,
+          limit,
+          ...(search && { search }),
+        },
+      }),
+      providesTags: ["DOCTOR_PATIENT"],
+    }),
+
+    getDoctorDashboardOverview: builder.query<DoctorDashboardOverviewData, void>({
+      query: () => ({
+        url: "/api/doctor/me/overview",
+        method: "GET",
+      }),
+      providesTags: ["DASHBOARD"],
+      transformResponse: (res: DoctorDashboardOverviewResponse) => res.data,
+    }),
   }),
 })
 
@@ -84,4 +114,7 @@ export const {
   useCreateDOCTORMutation,
   useUpdateDOCTORMutation,
   useDeleteDOCTORMutation,
+  useGetDoctorMyPatientsQuery,
+  useGetDoctorDashboardOverviewQuery,
 } = doctorApi
+

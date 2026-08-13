@@ -19,9 +19,10 @@ export const appointmentApi = baseApi.injectEndpoints({
         search?: string
         doctorId?: string
         patientId?: string
+        userId?: string
       }
     >({
-      query: ({ page = 1, limit = 10, status, search, doctorId, patientId }) => ({
+      query: ({ page = 1, limit = 10, status, search, doctorId, patientId, userId }) => ({
         url: "/api/appointment",
         method: "GET",
         params: {
@@ -31,6 +32,7 @@ export const appointmentApi = baseApi.injectEndpoints({
           ...(search && { search }),
           ...(doctorId && { doctorId }),
           ...(patientId && { patientId }),
+          ...(userId && { userId }),
         },
       }),
 

@@ -32,11 +32,14 @@ export const GET = withAuth(
   Role.DOCTOR
 )(async (req, context, user) => {
   const { doctorId } = await context.params
-  const patients = await DoctorPatientService.getPatientsByDoctor(doctorId)
+  const searchParams = req.nextUrl.searchParams
+  const query = Object.fromEntries(searchParams.entries())
+  const result = await DoctorPatientService.getPatientsByDoctor(doctorId, query)
   return sendResponse({
     statusCode: StatusCodes.OK,
     success: true,
     message: "Patients retrieved successfully",
-    data: patients,
+    data: result.patients,
+    meta: result.meta,
   })
 })

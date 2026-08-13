@@ -35,8 +35,6 @@ export interface RecentAppointment {
   status: string
 }
 
-// ── New analytics types ────────────────────────────────────────────────────────
-
 export interface DoctorSpecializationStat {
   specialization: string
   count: number
@@ -63,7 +61,7 @@ export interface DashboardOverviewData {
   appointmentsByType: AppointmentTypeStat[]
   monthlyAppointments: MonthlyAppointmentStat[]
   recentAppointments: RecentAppointment[]
-  // New
+
   doctorsBySpecialization: DoctorSpecializationStat[]
   doctorAvailability: DoctorAvailabilityStat[]
   patientsByStatus: PatientStatusStat[]
@@ -75,3 +73,26 @@ export interface DashboardOverviewResponse {
   message: string
   data: DashboardOverviewData
 }
+
+export interface DoctorDashboardStats {
+  totalPatients: number
+  totalAppointments: number
+  todayAppointments: number
+  scheduledAppointments: number
+  completedAppointments: number
+}
+
+export interface DoctorDashboardOverviewData {
+  stats: DoctorDashboardStats
+  appointmentsByStatus: AppointmentStatusStat[]
+  appointmentsByType: AppointmentTypeStat[]
+  monthlyAppointments: MonthlyAppointmentStat[]
+  recentAppointments: RecentAppointment[]
+}
+
+export interface DoctorDashboardOverviewResponse {
+  success: boolean
+  message: string
+  data: DoctorDashboardOverviewData
+}
+

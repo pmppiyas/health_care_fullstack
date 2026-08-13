@@ -11,19 +11,41 @@ import {
   SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
-  SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
+import { Skeleton } from "@/components/ui/skeleton"
 import Logo from "@/components/shared/Logo"
 import { getRoutesByRole } from "@/routes/routes"
 import NavLinkClient from "@/components/nav-link-client"
 import { useAppSelector } from "@/redux/hooks"
-import { Role } from "@/app/api/user/user.interface"
+import { useGetMeQuery } from "@/redux/features/auth.api"
+
+function SidebarSkeleton() {
+  return (
+    <div className="space-y-6 px-4 py-6">
+      <div className="space-y-2">
+        <Skeleton className="h-3 w-20 rounded" />
+        {Array.from({ length: 4 }).map((_, i) => (
+          <Skeleton key={i} className="h-8 w-full rounded-lg" />
+        ))}
+      </div>
+      <div className="space-y-2">
+        <Skeleton className="h-3 w-24 rounded" />
+        {Array.from({ length: 3 }).map((_, i) => (
+          <Skeleton key={i} className="h-8 w-full rounded-lg" />
+        ))}
+      </div>
+    </div>
+  )
+}
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  // Trigger getMe to hydrate auth state on mount / refresh
+  const { isLoading: isMeLoading } = useGetMeQuery()
   const user = useAppSelector((state) => state.auth.user)
-  const role = user?.role ?? Role.ADMIN
-  const navMenu = getRoutesByRole(role)
+
+  const role = user?.role
+  const navMenu = role ? getRoutesByRole(role) : []
 
   const allHrefs = React.useMemo(
     () => navMenu.flatMap((section) => section.nav.map((item) => item.href)),
@@ -42,29 +64,33 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        {navMenu.map((section, idx) => (
-          <SidebarGroup key={idx} className="mb-4 last:mb-0">
-            {section.title && (
-              <SidebarGroupLabel className="mb-2 px-4 text-[10px] font-black tracking-widest text-muted-foreground/60 uppercase">
-                {section.title}
-              </SidebarGroupLabel>
-            )}
-            <SidebarGroupContent>
-              <SidebarMenu className="space-y-1 px-2">
-                {section.nav.map((item) => (
-                  <SidebarMenuItem key={item.href}>
-                    <NavLinkClient
-                      href={item.href}
-                      title={item.title}
-                      iconName={item.iconName || ""}
-                      allHrefs={allHrefs}
-                    />
-                  </SidebarMenuItem>
-                ))}
-              </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
-        ))}
+        {isMeLoading ? (
+          <SidebarSkeleton />
+        ) : (
+          navMenu.map((section, idx) => (
+            <SidebarGroup key={idx} className="mb-4 last:mb-0">
+              {section.title && (
+                <SidebarGroupLabel className="mb-2 px-4 text-[10px] font-black tracking-widest text-muted-foreground/60 uppercase">
+                  {section.title}
+                </SidebarGroupLabel>
+              )}
+              <SidebarGroupContent>
+                <SidebarMenu className="space-y-1 px-2">
+                  {section.nav.map((item) => (
+                    <SidebarMenuItem key={item.href}>
+                      <NavLinkClient
+                        href={item.href}
+                        title={item.title}
+                        iconName={item.iconName || ""}
+                        allHrefs={allHrefs}
+                      />
+                    </SidebarMenuItem>
+                  ))}
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
+          ))
+        )}
       </SidebarContent>
       <SidebarFooter>
         <NavUser />

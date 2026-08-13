@@ -60,6 +60,7 @@ interface AppointmentAddEditFormProps {
   patients: PatientOption[]
   defaultDoctorId?: string
   defaultPatientId?: string
+  basePath?: string
 }
 
 type AppointmentFormValues = {
@@ -132,6 +133,7 @@ export default function AppointmentAddEditForm({
   patients,
   defaultDoctorId,
   defaultPatientId,
+  basePath = "/admin/dashboard/appointments",
 }: AppointmentAddEditFormProps) {
   const [serverError, setServerError] = useState("")
 
@@ -230,7 +232,7 @@ export default function AppointmentAddEditForm({
 
         toast.success("Appointment updated successfully")
 
-        window.location.href = "/admin/dashboard/appointments"
+        window.location.href = basePath
 
         return
       }
@@ -239,7 +241,7 @@ export default function AppointmentAddEditForm({
 
       toast.success("Appointment created successfully")
 
-      window.location.href = "/admin/dashboard/appointments"
+      window.location.href = basePath
     } catch (err: unknown) {
       const message = (
         err as {
@@ -460,7 +462,7 @@ export default function AppointmentAddEditForm({
             asChild
             disabled={isSubmitting}
           >
-            <Link href="/admin/dashboard/appointments">Cancel</Link>
+            <Link href={basePath}>Cancel</Link>
           </Button>
 
           <Button

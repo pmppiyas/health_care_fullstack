@@ -3,7 +3,6 @@ import {
   MoreHorizontal,
   Pencil,
   Trash2,
-  Stethoscope,
   UserCircle2,
   CalendarDays,
   Clock,
@@ -25,20 +24,16 @@ import {
   AppointmentStatus,
 } from "@/interfaces/appointment.interface"
 
-import { statusConfig, typeConfig } from "./AppointmentColorConfig"
+import {
+  statusConfig,
+  typeConfig,
+} from "@/components/dashboard/admin/appointment/AppointmentColorConfig"
 
-interface AppointmentColumnActions {
+interface DoctorAppointmentColumnActions {
   onView: (a: Appointment) => void
   onEdit: (a: Appointment) => void
   onCancel: (a: Appointment) => void
   onDelete: (a: Appointment) => void
-}
-
-function getDoctor(a: Appointment) {
-  if (typeof a.doctorId === "object" && a.doctorId !== null) {
-    return a.doctorId as { _id: string; name?: string; specialization?: string }
-  }
-  return null
 }
 
 function getPatient(a: Appointment) {
@@ -57,49 +52,24 @@ function formatDate(date: string | Date) {
   }).format(new Date(date))
 }
 
-export const getAppointmentColumns = ({
+export const getDoctorAppointmentColumns = ({
   onView,
   onEdit,
   onCancel,
   onDelete,
-}: AppointmentColumnActions): ColumnDef<Appointment>[] => [
-  {
-    key: "doctor",
-    header: "Doctor",
-    render: (row) => {
-      const doctor = getDoctor(row)
-      return (
-        <div className="flex items-center gap-2">
-          <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary/10">
-            <Stethoscope className="size-4 text-primary" />
-          </div>
-          <div className="min-w-0">
-            <p className="truncate font-medium text-foreground">
-              {doctor?.name ?? "—"}
-            </p>
-            {doctor?.specialization && (
-              <p className="mt-0.5 truncate text-xs text-muted-foreground">
-                {doctor.specialization}
-              </p>
-            )}
-          </div>
-        </div>
-      )
-    },
-  },
-
+}: DoctorAppointmentColumnActions): ColumnDef<Appointment>[] => [
   {
     key: "patient",
     header: "Patient",
     render: (row) => {
       const patient = getPatient(row)
       return (
-        <div className="flex items-center gap-2">
-          <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-muted">
-            <UserCircle2 className="size-4 text-muted-foreground" />
+        <div className="flex items-center gap-2.5">
+          <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary/10">
+            <UserCircle2 className="size-4 text-primary" />
           </div>
           <div className="min-w-0">
-            <p className="truncate text-sm font-medium text-foreground">
+            <p className="truncate font-medium text-foreground">
               {patient?.name ?? "—"}
             </p>
             {patient?.condition && (
@@ -165,13 +135,24 @@ export const getAppointmentColumns = ({
         <span
           className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[10px] font-medium ${cfg?.className ?? "border-border bg-muted text-muted-foreground"}`}
         >
-          <span
-            className={`size-1.5 rounded-full ${cfg?.dot ?? "bg-muted-foreground"}`}
-          />
+          <span className={`size-1.5 rounded-full ${cfg?.dot ?? "bg-muted-foreground"}`} />
           {cfg?.label ?? row.status}
         </span>
       )
     },
+  },
+
+  {
+    key: "reason",
+    header: "Reason",
+    render: (row) => (
+      <span
+        className="block max-w-40 truncate text-xs text-muted-foreground"
+        title={row.reason ?? ""}
+      >
+        {row.reason || "—"}
+      </span>
+    ),
   },
 
   {
@@ -194,10 +175,7 @@ export const getAppointmentColumns = ({
         <DropdownMenuContent align="end" className="w-44">
           <DropdownMenuItem
             className="cursor-pointer gap-2"
-            onClick={(e) => {
-              e.stopPropagation()
-              onView(row)
-            }}
+            onClick={(e) => { e.stopPropagation(); onView(row) }}
           >
             <Eye className="size-3.5" />
             View
@@ -205,10 +183,7 @@ export const getAppointmentColumns = ({
 
           <DropdownMenuItem
             className="cursor-pointer gap-2"
-            onClick={(e) => {
-              e.stopPropagation()
-              onEdit(row)
-            }}
+            onClick={(e) => { e.stopPropagation(); onEdit(row) }}
           >
             <Pencil className="size-3.5" />
             Edit
@@ -218,10 +193,7 @@ export const getAppointmentColumns = ({
             row.status !== AppointmentStatus.COMPLETED && (
               <DropdownMenuItem
                 className="cursor-pointer gap-2 text-orange-600 focus:bg-orange-500/10 focus:text-orange-600"
-                onClick={(e) => {
-                  e.stopPropagation()
-                  onCancel(row)
-                }}
+                onClick={(e) => { e.stopPropagation(); onCancel(row) }}
               >
                 <XCircle className="size-3.5" />
                 Cancel
@@ -232,10 +204,7 @@ export const getAppointmentColumns = ({
 
           <DropdownMenuItem
             className="cursor-pointer gap-2 text-destructive focus:bg-destructive/10 focus:text-destructive"
-            onClick={(e) => {
-              e.stopPropagation()
-              onDelete(row)
-            }}
+            onClick={(e) => { e.stopPropagation(); onDelete(row) }}
           >
             <Trash2 className="size-3.5" />
             Delete

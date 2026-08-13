@@ -62,9 +62,31 @@ const getAllAppointments = async (req: NextRequest) => {
 
   const status = searchParams.get("status")
   const search = searchParams.get("search")?.trim()
+  const doctorIdParam = searchParams.get("doctorId")
+  const patientIdParam = searchParams.get("patientId")
+  const userIdParam = searchParams.get("userId")
 
-  // Build aggregation pipeline so we can filter by populated doctor/patient name
+  let resolvedDoctorId = doctorIdParam
+  if (!resolvedDoctorId && userIdParam) {
+    const doctor = await Doctor.findOne({ userId: userIdParam }).select("_id")
+    if (doctor) {
+      resolvedDoctorId = doctor._id.toString()
+    }
+  }
+
+  // Pre-lookup match stage for doctorId/patientId filtering (before $lookup)
+  const preLookupMatch: Record<string, unknown> = {}
+  if (resolvedDoctorId && Types.ObjectId.isValid(resolvedDoctorId)) {
+    preLookupMatch.doctorId = new Types.ObjectId(resolvedDoctorId)
+  }
+  if (patientIdParam && Types.ObjectId.isValid(patientIdParam)) {
+    preLookupMatch.patientId = new Types.ObjectId(patientIdParam)
+  }
+
   const pipeline: Record<string, unknown>[] = [
+    ...(Object.keys(preLookupMatch).length > 0
+      ? [{ $match: preLookupMatch }]
+      : []),
     // 1. Join doctor
     {
       $lookup: {

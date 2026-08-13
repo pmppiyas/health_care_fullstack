@@ -32,16 +32,15 @@ import AnalyticsSkeleton from "@/components/dashboard/admin/analytics/AnalyticsS
 
 import { MONTH_NAMES } from "@/constant/public.constant.meta"
 
-// Vibrant Color Palette for Charts
 const VIBRANT_PALETTE = [
-  "#8b5cf6", // Purple
-  "#3b82f6", // Blue
-  "#10b981", // Emerald
-  "#f59e0b", // Amber
-  "#ec4899", // Pink
-  "#06b6d4", // Cyan
-  "#f43f5e", // Rose
-  "#6366f1", // Indigo
+  "#8b5cf6",
+  "#3b82f6",
+  "#10b981",
+  "#f59e0b",
+  "#ec4899",
+  "#06b6d4",
+  "#f43f5e",
+  "#6366f1",
 ]
 
 const STATUS_COLORS: Record<string, string> = {
@@ -57,7 +56,10 @@ function ChartTooltip({ active, payload, label }: any) {
     <div className="rounded-xl border border-border bg-card p-3 text-xs shadow-xl">
       {label && <p className="mb-1.5 font-semibold text-foreground">{label}</p>}
       {payload.map((p: any, idx: number) => (
-        <div key={idx} className="flex items-center gap-2 text-muted-foreground">
+        <div
+          key={idx}
+          className="flex items-center gap-2 text-muted-foreground"
+        >
           <span
             className="size-2.5 rounded-full"
             style={{ backgroundColor: p.color || p.fill }}
@@ -89,7 +91,10 @@ export default function PatientAnalyticsWrapper() {
 
   if (isError || !analytics) {
     return (
-      <ErrorPage head="Patient Analytics" description="Failed to load analytics." />
+      <ErrorPage
+        head="Patient Analytics"
+        description="Failed to load analytics."
+      />
     )
   }
 
@@ -119,8 +124,16 @@ export default function PatientAnalyticsWrapper() {
 
   const patientStatusData = [
     { name: "Active", value: activePatients, color: STATUS_COLORS.Active },
-    { name: "Follow-up", value: followUpPatients, color: STATUS_COLORS["Follow-up"] },
-    { name: "Recovered", value: recoveredPatients, color: STATUS_COLORS.Recovered },
+    {
+      name: "Follow-up",
+      value: followUpPatients,
+      color: STATUS_COLORS["Follow-up"],
+    },
+    {
+      name: "Recovered",
+      value: recoveredPatients,
+      color: STATUS_COLORS.Recovered,
+    },
   ].filter((d) => d.value > 0)
 
   const topDoctors = [...doctorPatientStats]
@@ -174,8 +187,12 @@ export default function PatientAnalyticsWrapper() {
                 <Activity className="size-4 text-violet-600 dark:text-violet-400" />
               </div>
               <div>
-                <CardTitle className="text-base font-semibold">Patient Growth Trend</CardTitle>
-                <p className="text-xs text-muted-foreground">Registrations over time</p>
+                <CardTitle className="text-base font-semibold">
+                  Patient Growth Trend
+                </CardTitle>
+                <p className="text-xs text-muted-foreground">
+                  Registrations over time
+                </p>
               </div>
             </div>
           </CardHeader>
@@ -188,9 +205,23 @@ export default function PatientAnalyticsWrapper() {
                     margin={{ top: 10, right: 10, left: -20, bottom: 5 }}
                   >
                     <defs>
-                      <linearGradient id="vibrantPatientGrad" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.4} />
-                        <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0.0} />
+                      <linearGradient
+                        id="vibrantPatientGrad"
+                        x1="0"
+                        y1="0"
+                        x2="0"
+                        y2="1"
+                      >
+                        <stop
+                          offset="5%"
+                          stopColor="#8b5cf6"
+                          stopOpacity={0.4}
+                        />
+                        <stop
+                          offset="95%"
+                          stopColor="#8b5cf6"
+                          stopOpacity={0.0}
+                        />
                       </linearGradient>
                     </defs>
                     <CartesianGrid
@@ -202,12 +233,18 @@ export default function PatientAnalyticsWrapper() {
                       dataKey="month"
                       tickLine={false}
                       axisLine={false}
-                      tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }}
+                      tick={{
+                        fontSize: 11,
+                        fill: "hsl(var(--muted-foreground))",
+                      }}
                     />
                     <YAxis
                       tickLine={false}
                       axisLine={false}
-                      tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }}
+                      tick={{
+                        fontSize: 11,
+                        fill: "hsl(var(--muted-foreground))",
+                      }}
                       allowDecimals={false}
                     />
                     <Tooltip content={<ChartTooltip />} />
@@ -219,7 +256,12 @@ export default function PatientAnalyticsWrapper() {
                       strokeWidth={3}
                       fill="url(#vibrantPatientGrad)"
                       dot={{ r: 4, fill: "#8b5cf6", strokeWidth: 0 }}
-                      activeDot={{ r: 7, fill: "#7c3aed", strokeWidth: 2, stroke: "#fff" }}
+                      activeDot={{
+                        r: 7,
+                        fill: "#7c3aed",
+                        strokeWidth: 2,
+                        stroke: "#fff",
+                      }}
                     />
                   </AreaChart>
                 </ResponsiveContainer>
@@ -240,8 +282,12 @@ export default function PatientAnalyticsWrapper() {
                 <HeartPulse className="size-4 text-rose-600 dark:text-rose-400" />
               </div>
               <div>
-                <CardTitle className="text-base font-semibold">Patients by Condition</CardTitle>
-                <p className="text-xs text-muted-foreground">Medical condition breakdown</p>
+                <CardTitle className="text-base font-semibold">
+                  Patients by Condition
+                </CardTitle>
+                <p className="text-xs text-muted-foreground">
+                  Medical condition breakdown
+                </p>
               </div>
             </div>
           </CardHeader>
@@ -263,16 +309,25 @@ export default function PatientAnalyticsWrapper() {
                       dataKey="condition"
                       tickLine={false}
                       axisLine={false}
-                      tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }}
+                      tick={{
+                        fontSize: 10,
+                        fill: "hsl(var(--muted-foreground))",
+                      }}
                       interval={0}
                     />
                     <YAxis
                       tickLine={false}
                       axisLine={false}
-                      tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }}
+                      tick={{
+                        fontSize: 11,
+                        fill: "hsl(var(--muted-foreground))",
+                      }}
                       allowDecimals={false}
                     />
-                    <Tooltip content={<ChartTooltip />} cursor={{ fill: "rgba(148, 163, 184, 0.1)" }} />
+                    <Tooltip
+                      content={<ChartTooltip />}
+                      cursor={{ fill: "rgba(148, 163, 184, 0.1)" }}
+                    />
                     <Bar dataKey="count" name="Patients" radius={[8, 8, 0, 0]}>
                       {conditionStats.map((_, i) => (
                         <Cell
@@ -299,10 +354,14 @@ export default function PatientAnalyticsWrapper() {
                   >
                     <span
                       className="size-2 rounded-full"
-                      style={{ background: VIBRANT_PALETTE[i % VIBRANT_PALETTE.length] }}
+                      style={{
+                        background: VIBRANT_PALETTE[i % VIBRANT_PALETTE.length],
+                      }}
                     />
                     {c.condition}
-                    <span className="font-bold text-muted-foreground">({c.count})</span>
+                    <span className="font-bold text-muted-foreground">
+                      ({c.count})
+                    </span>
                   </span>
                 ))}
               </div>
@@ -321,7 +380,9 @@ export default function PatientAnalyticsWrapper() {
                 <Stethoscope className="size-4 text-sky-600 dark:text-sky-400" />
               </div>
               <div>
-                <CardTitle className="text-base font-semibold">Patients per Doctor</CardTitle>
+                <CardTitle className="text-base font-semibold">
+                  Patients per Doctor
+                </CardTitle>
                 <p className="text-xs text-muted-foreground">
                   Doctors with highest patient workload
                 </p>
@@ -347,7 +408,10 @@ export default function PatientAnalyticsWrapper() {
                       type="number"
                       tickLine={false}
                       axisLine={false}
-                      tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }}
+                      tick={{
+                        fontSize: 11,
+                        fill: "hsl(var(--muted-foreground))",
+                      }}
                       allowDecimals={false}
                     />
                     <YAxis
@@ -356,10 +420,20 @@ export default function PatientAnalyticsWrapper() {
                       width={120}
                       tickLine={false}
                       axisLine={false}
-                      tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }}
+                      tick={{
+                        fontSize: 11,
+                        fill: "hsl(var(--muted-foreground))",
+                      }}
                     />
-                    <Tooltip content={<ChartTooltip />} cursor={{ fill: "rgba(148, 163, 184, 0.1)" }} />
-                    <Bar dataKey="patientCount" name="Patients" radius={[0, 8, 8, 0]}>
+                    <Tooltip
+                      content={<ChartTooltip />}
+                      cursor={{ fill: "rgba(148, 163, 184, 0.1)" }}
+                    />
+                    <Bar
+                      dataKey="patientCount"
+                      name="Patients"
+                      radius={[0, 8, 8, 0]}
+                    >
                       {topDoctors.map((_, i) => (
                         <Cell
                           key={i}
@@ -386,8 +460,12 @@ export default function PatientAnalyticsWrapper() {
                 <Users className="size-4 text-emerald-600 dark:text-emerald-400" />
               </div>
               <div>
-                <CardTitle className="text-base font-semibold">Patient Status</CardTitle>
-                <p className="text-xs text-muted-foreground">Current status distribution</p>
+                <CardTitle className="text-base font-semibold">
+                  Patient Status
+                </CardTitle>
+                <p className="text-xs text-muted-foreground">
+                  Current status distribution
+                </p>
               </div>
             </div>
           </CardHeader>
@@ -419,7 +497,9 @@ export default function PatientAnalyticsWrapper() {
                     <span className="text-3xl font-bold text-foreground">
                       {totalPatients}
                     </span>
-                    <span className="text-xs font-medium text-muted-foreground">Patients</span>
+                    <span className="text-xs font-medium text-muted-foreground">
+                      Patients
+                    </span>
                   </div>
                 </div>
 
@@ -430,16 +510,23 @@ export default function PatientAnalyticsWrapper() {
                         ? Math.round((item.value / totalPatients) * 100)
                         : 0
                     return (
-                      <div key={item.name} className="flex items-center justify-between text-sm">
+                      <div
+                        key={item.name}
+                        className="flex items-center justify-between text-sm"
+                      >
                         <div className="flex items-center gap-2">
                           <span
                             className="size-3 rounded-full"
                             style={{ backgroundColor: item.color }}
                           />
-                          <span className="font-medium text-foreground">{item.name}</span>
+                          <span className="font-medium text-foreground">
+                            {item.name}
+                          </span>
                         </div>
                         <div className="flex items-center gap-2">
-                          <span className="font-bold text-foreground">{item.value}</span>
+                          <span className="font-bold text-foreground">
+                            {item.value}
+                          </span>
                           <Badge
                             variant="outline"
                             className="border-border bg-muted/30 text-xs font-semibold text-muted-foreground"
@@ -469,7 +556,9 @@ export default function PatientAnalyticsWrapper() {
               <Stethoscope className="size-4 text-primary" />
             </div>
             <div>
-              <CardTitle className="text-base font-semibold">Doctor Workload Overview</CardTitle>
+              <CardTitle className="text-base font-semibold">
+                Doctor Workload Overview
+              </CardTitle>
               <p className="text-xs text-muted-foreground">
                 Doctors with the highest assigned patient workload
               </p>
@@ -482,16 +571,16 @@ export default function PatientAnalyticsWrapper() {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-border text-left">
-                    <th className="px-3 py-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                    <th className="px-3 py-3 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
                       Doctor
                     </th>
-                    <th className="px-3 py-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                    <th className="px-3 py-3 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
                       Specialization
                     </th>
-                    <th className="px-3 py-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                    <th className="px-3 py-3 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
                       Patients
                     </th>
-                    <th className="px-3 py-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                    <th className="px-3 py-3 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
                       Workload Ratio
                     </th>
                   </tr>
@@ -503,8 +592,11 @@ export default function PatientAnalyticsWrapper() {
                     const barColor = VIBRANT_PALETTE[i % VIBRANT_PALETTE.length]
 
                     return (
-                      <tr key={doctor._id} className="transition-colors hover:bg-muted/40">
-                        <td className="px-3 py-3.5 font-medium text-foreground whitespace-nowrap">
+                      <tr
+                        key={doctor._id}
+                        className="transition-colors hover:bg-muted/40"
+                      >
+                        <td className="px-3 py-3.5 font-medium whitespace-nowrap text-foreground">
                           <div className="flex items-center gap-2.5">
                             <span
                               className="size-2.5 rounded-full"
@@ -513,10 +605,10 @@ export default function PatientAnalyticsWrapper() {
                             {doctor.name}
                           </div>
                         </td>
-                        <td className="px-3 py-3.5 text-muted-foreground whitespace-nowrap">
+                        <td className="px-3 py-3.5 whitespace-nowrap text-muted-foreground">
                           {doctor.specialization}
                         </td>
-                        <td className="px-3 py-3.5 font-bold text-foreground whitespace-nowrap">
+                        <td className="px-3 py-3.5 font-bold whitespace-nowrap text-foreground">
                           {count}
                         </td>
                         <td className="px-3 py-3.5">

@@ -32,16 +32,15 @@ import { MONTH_NAMES } from "@/constant/public.constant.meta"
 import ErrorPage from "@/components/dashboard/shared/ErrorPage"
 import AnalyticsSkeleton from "@/components/dashboard/admin/analytics/AnalyticsSkeleton"
 
-// Vibrant Color Palette for Charts
 const VIBRANT_PALETTE = [
-  "#6366f1", // Indigo
-  "#10b981", // Emerald
-  "#f59e0b", // Amber
-  "#ec4899", // Pink
-  "#3b82f6", // Blue
-  "#8b5cf6", // Purple
-  "#06b6d4", // Cyan
-  "#f43f5e", // Rose
+  "#6366f1",
+  "#10b981",
+  "#f59e0b",
+  "#ec4899",
+  "#3b82f6",
+  "#8b5cf6",
+  "#06b6d4",
+  "#f43f5e",
 ]
 
 function ChartTooltip({ active, payload, label }: any) {
@@ -50,7 +49,10 @@ function ChartTooltip({ active, payload, label }: any) {
     <div className="rounded-xl border border-border bg-card p-3 text-xs shadow-xl">
       {label && <p className="mb-1.5 font-semibold text-foreground">{label}</p>}
       {payload.map((p: any, idx: number) => (
-        <div key={idx} className="flex items-center gap-2 text-muted-foreground">
+        <div
+          key={idx}
+          className="flex items-center gap-2 text-muted-foreground"
+        >
           <span
             className="size-2.5 rounded-full"
             style={{ backgroundColor: p.color || p.fill }}
@@ -89,8 +91,12 @@ export default function DoctorAnalyticsWrapper() {
     )
   }
 
-  const { summary, specializationStats, doctorPatientStats, monthlyDoctorStats } =
-    analytics
+  const {
+    summary,
+    specializationStats,
+    doctorPatientStats,
+    monthlyDoctorStats,
+  } = analytics
 
   const monthlyData = monthlyDoctorStats.map((item) => ({
     month: MONTH_NAMES[item.month - 1] ?? item.month,
@@ -99,7 +105,11 @@ export default function DoctorAnalyticsWrapper() {
 
   const availabilityData = [
     { name: "Available", value: summary.activeDoctors, color: "#10b981" },
-    { name: "Unavailable", value: summary.unavailableDoctors, color: "#f43f5e" },
+    {
+      name: "Unavailable",
+      value: summary.unavailableDoctors,
+      color: "#f43f5e",
+    },
   ]
 
   const patientDistribution = doctorPatientStats.slice(0, 5).map((d) => ({
@@ -168,7 +178,9 @@ export default function DoctorAnalyticsWrapper() {
                 <Activity className="size-4 text-indigo-600 dark:text-indigo-400" />
               </div>
               <div>
-                <CardTitle className="text-base font-semibold">Doctor Growth Trend</CardTitle>
+                <CardTitle className="text-base font-semibold">
+                  Doctor Growth Trend
+                </CardTitle>
                 <p className="text-xs text-muted-foreground">
                   New doctor registrations per month
                 </p>
@@ -184,9 +196,23 @@ export default function DoctorAnalyticsWrapper() {
                     margin={{ top: 10, right: 10, left: -20, bottom: 5 }}
                   >
                     <defs>
-                      <linearGradient id="vibrantGrowthGrad" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#6366f1" stopOpacity={0.4} />
-                        <stop offset="95%" stopColor="#6366f1" stopOpacity={0.0} />
+                      <linearGradient
+                        id="vibrantGrowthGrad"
+                        x1="0"
+                        y1="0"
+                        x2="0"
+                        y2="1"
+                      >
+                        <stop
+                          offset="5%"
+                          stopColor="#6366f1"
+                          stopOpacity={0.4}
+                        />
+                        <stop
+                          offset="95%"
+                          stopColor="#6366f1"
+                          stopOpacity={0.0}
+                        />
                       </linearGradient>
                     </defs>
                     <CartesianGrid
@@ -198,12 +224,18 @@ export default function DoctorAnalyticsWrapper() {
                       dataKey="month"
                       tickLine={false}
                       axisLine={false}
-                      tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }}
+                      tick={{
+                        fontSize: 11,
+                        fill: "hsl(var(--muted-foreground))",
+                      }}
                     />
                     <YAxis
                       tickLine={false}
                       axisLine={false}
-                      tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }}
+                      tick={{
+                        fontSize: 11,
+                        fill: "hsl(var(--muted-foreground))",
+                      }}
                       allowDecimals={false}
                     />
                     <Tooltip content={<ChartTooltip />} />
@@ -214,7 +246,12 @@ export default function DoctorAnalyticsWrapper() {
                       strokeWidth={3}
                       fill="url(#vibrantGrowthGrad)"
                       dot={{ r: 4, fill: "#6366f1", strokeWidth: 0 }}
-                      activeDot={{ r: 7, fill: "#4f46e5", strokeWidth: 2, stroke: "#fff" }}
+                      activeDot={{
+                        r: 7,
+                        fill: "#4f46e5",
+                        strokeWidth: 2,
+                        stroke: "#fff",
+                      }}
                     />
                   </AreaChart>
                 </ResponsiveContainer>
@@ -235,8 +272,12 @@ export default function DoctorAnalyticsWrapper() {
                 <Stethoscope className="size-4 text-purple-600 dark:text-purple-400" />
               </div>
               <div>
-                <CardTitle className="text-base font-semibold">Doctors by Specialization</CardTitle>
-                <p className="text-xs text-muted-foreground">Distribution across specialties</p>
+                <CardTitle className="text-base font-semibold">
+                  Doctors by Specialization
+                </CardTitle>
+                <p className="text-xs text-muted-foreground">
+                  Distribution across specialties
+                </p>
               </div>
             </div>
           </CardHeader>
@@ -258,16 +299,25 @@ export default function DoctorAnalyticsWrapper() {
                       dataKey="specialization"
                       tickLine={false}
                       axisLine={false}
-                      tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }}
+                      tick={{
+                        fontSize: 10,
+                        fill: "hsl(var(--muted-foreground))",
+                      }}
                       interval={0}
                     />
                     <YAxis
                       tickLine={false}
                       axisLine={false}
-                      tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }}
+                      tick={{
+                        fontSize: 11,
+                        fill: "hsl(var(--muted-foreground))",
+                      }}
                       allowDecimals={false}
                     />
-                    <Tooltip content={<ChartTooltip />} cursor={{ fill: "rgba(148, 163, 184, 0.1)" }} />
+                    <Tooltip
+                      content={<ChartTooltip />}
+                      cursor={{ fill: "rgba(148, 163, 184, 0.1)" }}
+                    />
                     <Bar dataKey="count" name="Doctors" radius={[8, 8, 0, 0]}>
                       {specializationStats.map((_, i) => (
                         <Cell
@@ -294,10 +344,14 @@ export default function DoctorAnalyticsWrapper() {
                   >
                     <span
                       className="size-2 rounded-full"
-                      style={{ background: VIBRANT_PALETTE[i % VIBRANT_PALETTE.length] }}
+                      style={{
+                        background: VIBRANT_PALETTE[i % VIBRANT_PALETTE.length],
+                      }}
                     />
                     {s.specialization}
-                    <span className="font-bold text-muted-foreground">({s.count})</span>
+                    <span className="font-bold text-muted-foreground">
+                      ({s.count})
+                    </span>
                   </span>
                 ))}
               </div>
@@ -316,7 +370,9 @@ export default function DoctorAnalyticsWrapper() {
                 <Users className="size-4 text-emerald-600 dark:text-emerald-400" />
               </div>
               <div>
-                <CardTitle className="text-base font-semibold">Patients per Doctor</CardTitle>
+                <CardTitle className="text-base font-semibold">
+                  Patients per Doctor
+                </CardTitle>
                 <p className="text-xs text-muted-foreground">
                   Doctors with highest patient workload
                 </p>
@@ -342,7 +398,10 @@ export default function DoctorAnalyticsWrapper() {
                       type="number"
                       tickLine={false}
                       axisLine={false}
-                      tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }}
+                      tick={{
+                        fontSize: 11,
+                        fill: "hsl(var(--muted-foreground))",
+                      }}
                       allowDecimals={false}
                     />
                     <YAxis
@@ -351,9 +410,15 @@ export default function DoctorAnalyticsWrapper() {
                       width={120}
                       tickLine={false}
                       axisLine={false}
-                      tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }}
+                      tick={{
+                        fontSize: 11,
+                        fill: "hsl(var(--muted-foreground))",
+                      }}
                     />
-                    <Tooltip content={<ChartTooltip />} cursor={{ fill: "rgba(148, 163, 184, 0.1)" }} />
+                    <Tooltip
+                      content={<ChartTooltip />}
+                      cursor={{ fill: "rgba(148, 163, 184, 0.1)" }}
+                    />
                     <Bar dataKey="Patients" radius={[0, 8, 8, 0]}>
                       {patientDistribution.map((_, i) => (
                         <Cell
@@ -381,8 +446,12 @@ export default function DoctorAnalyticsWrapper() {
                 <CalendarDays className="size-4 text-amber-600 dark:text-amber-400" />
               </div>
               <div>
-                <CardTitle className="text-base font-semibold">Doctor Availability</CardTitle>
-                <p className="text-xs text-muted-foreground">Current active status</p>
+                <CardTitle className="text-base font-semibold">
+                  Doctor Availability
+                </CardTitle>
+                <p className="text-xs text-muted-foreground">
+                  Current active status
+                </p>
               </div>
             </div>
           </CardHeader>
@@ -414,7 +483,9 @@ export default function DoctorAnalyticsWrapper() {
                     <span className="text-3xl font-bold text-foreground">
                       {summary.totalDoctors}
                     </span>
-                    <span className="text-xs font-medium text-muted-foreground">Doctors</span>
+                    <span className="text-xs font-medium text-muted-foreground">
+                      Doctors
+                    </span>
                   </div>
                 </div>
 
@@ -422,10 +493,14 @@ export default function DoctorAnalyticsWrapper() {
                   <div className="flex items-center justify-between text-sm">
                     <div className="flex items-center gap-2">
                       <span className="size-3 rounded-full bg-[#10b981]" />
-                      <span className="font-medium text-foreground">Available</span>
+                      <span className="font-medium text-foreground">
+                        Available
+                      </span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="font-bold text-foreground">{summary.activeDoctors}</span>
+                      <span className="font-bold text-foreground">
+                        {summary.activeDoctors}
+                      </span>
                       <Badge className="border-emerald-500/30 bg-emerald-500/10 text-xs font-semibold text-emerald-600 dark:text-emerald-400">
                         {availPct}%
                       </Badge>
@@ -434,10 +509,14 @@ export default function DoctorAnalyticsWrapper() {
                   <div className="flex items-center justify-between text-sm">
                     <div className="flex items-center gap-2">
                       <span className="size-3 rounded-full bg-[#f43f5e]" />
-                      <span className="font-medium text-foreground">Unavailable</span>
+                      <span className="font-medium text-foreground">
+                        Unavailable
+                      </span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="font-bold text-foreground">{summary.unavailableDoctors}</span>
+                      <span className="font-bold text-foreground">
+                        {summary.unavailableDoctors}
+                      </span>
                       <Badge className="border-rose-500/30 bg-rose-500/10 text-xs font-semibold text-rose-600 dark:text-rose-400">
                         {(100 - parseFloat(availPct)).toFixed(1)}%
                       </Badge>
@@ -462,7 +541,9 @@ export default function DoctorAnalyticsWrapper() {
               <Stethoscope className="size-4 text-primary" />
             </div>
             <div>
-              <CardTitle className="text-base font-semibold">Top Doctors Workload</CardTitle>
+              <CardTitle className="text-base font-semibold">
+                Top Doctors Workload
+              </CardTitle>
               <p className="text-xs text-muted-foreground">
                 Doctors with the highest assigned patient volume
               </p>
@@ -475,19 +556,19 @@ export default function DoctorAnalyticsWrapper() {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-border text-left">
-                    <th className="px-3 py-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                    <th className="px-3 py-3 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
                       Doctor
                     </th>
-                    <th className="px-3 py-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                    <th className="px-3 py-3 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
                       Specialization
                     </th>
-                    <th className="px-3 py-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                    <th className="px-3 py-3 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
                       Patients
                     </th>
-                    <th className="px-3 py-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                    <th className="px-3 py-3 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
                       Workload Ratio
                     </th>
-                    <th className="px-3 py-3 text-right text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                    <th className="px-3 py-3 text-right text-xs font-semibold tracking-wide text-muted-foreground uppercase">
                       Status
                     </th>
                   </tr>
@@ -499,8 +580,11 @@ export default function DoctorAnalyticsWrapper() {
                     const barColor = VIBRANT_PALETTE[i % VIBRANT_PALETTE.length]
 
                     return (
-                      <tr key={doctor._id} className="transition-colors hover:bg-muted/40">
-                        <td className="px-3 py-3.5 font-medium text-foreground whitespace-nowrap">
+                      <tr
+                        key={doctor._id}
+                        className="transition-colors hover:bg-muted/40"
+                      >
+                        <td className="px-3 py-3.5 font-medium whitespace-nowrap text-foreground">
                           <div className="flex items-center gap-2.5">
                             <span
                               className="size-2.5 rounded-full"
@@ -509,10 +593,10 @@ export default function DoctorAnalyticsWrapper() {
                             {doctor.name}
                           </div>
                         </td>
-                        <td className="px-3 py-3.5 text-muted-foreground whitespace-nowrap">
+                        <td className="px-3 py-3.5 whitespace-nowrap text-muted-foreground">
                           {doctor.specialization}
                         </td>
-                        <td className="px-3 py-3.5 font-bold text-foreground whitespace-nowrap">
+                        <td className="px-3 py-3.5 font-bold whitespace-nowrap text-foreground">
                           {count}
                         </td>
                         <td className="px-3 py-3.5">

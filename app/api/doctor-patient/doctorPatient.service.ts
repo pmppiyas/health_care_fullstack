@@ -66,24 +66,50 @@ const assignPatientToDoctor = async (
   }
 }
 
-const getPatientsByDoctor = async (doctorId: string) => {
+const getPatientsByDoctor = async (doctorId: string, query?: { search?: string; page?: string; limit?: string }) => {
   const doctor = await Doctor.findById(doctorId).select("_id name")
 
   if (!doctor) {
     throw new AppError(404, "Doctor not found")
   }
 
-  const assignments = await DoctorPatient.find({
-    doctorId,
-  })
-    .populate({
-      path: "patientId",
-      select: "name email phone condition",
-    })
-    .sort({ assignedAt: -1 })
-    .lean()
+  const page = Math.max(Number(query?.page ?? "1"), 1)
+  const limit = Math.min(Math.max(Number(query?.limit ?? "10"), 1), 100)
+  const skip = (page - 1) * limit
+  const search = query?.search?.trim()
 
-  return assignments
+  const assignments = await DoctorPatient.find({ doctorId }).lean()
+  const patientIds = assignments.map(a => a.patientId)
+
+  const patientQuery: any = { _id: { $in: patientIds } }
+  
+  if (search) {
+    patientQuery.$or = [
+      { name: { $regex: search, $options: "i" } },
+      { email: { $regex: search, $options: "i" } },
+      { condition: { $regex: search, $options: "i" } },
+    ]
+  }
+
+  const [patients, total] = await Promise.all([
+    Patient.find(patientQuery)
+      .select("-__v")
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .lean(),
+    Patient.countDocuments(patientQuery),
+  ])
+
+  return {
+    patients,
+    meta: {
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    },
+  }
 }
 
 const getDoctorsByPatient = async (patientId: string) => {

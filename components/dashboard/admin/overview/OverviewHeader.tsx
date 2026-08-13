@@ -8,10 +8,10 @@ function getGreeting() {
   if (hour < 17) return "Good afternoon"
   return "Good evening"
 }
-const OverviewHeader = (user: any) => {
+const OverviewHeader = ({ user }: { user: any }) => {
   return (
     <PageHeader
-      title={` ${getGreeting()}, ${user?.name ?? "Admin"} `}
+      title={` ${getGreeting()}, ${user?.name ?? "User"} `}
       description="Here's what's happening in your clinic today."
       icon={<LayoutDashboard className="size-5" />}
     />
