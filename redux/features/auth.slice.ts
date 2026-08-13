@@ -34,8 +34,14 @@ const authSlice = createSlice({
         }
       })
       .addMatcher(authApi.endpoints.getMe.matchFulfilled, (state, { payload }) => {
-        if (payload.data) {
-          state.user = payload.data
+        if (payload) {
+          state.user = payload
+          state.isAuthenticated = true
+        }
+      })
+      .addMatcher(authApi.endpoints.updateProfile.matchFulfilled, (state, { payload }) => {
+        if (payload) {
+          state.user = payload
           state.isAuthenticated = true
         }
       })

@@ -76,9 +76,9 @@ export const adminRoutes: RouteSection[] = [
     title: "Support & Settings",
     nav: [
       {
-        title: "Settings",
-        href: "/admin/dashboard/settings",
-        iconName: "Settings",
+        title: "Profile",
+        href: "/admin/dashboard/profile",
+        iconName: "ProfileShield",
       },
       {
         title: "Helpline",
@@ -107,6 +107,21 @@ export const doctorRoutes: RouteSection[] = [
         title: "My Patients",
         href: "/doctor/dashboard/patients",
         iconName: "Users",
+      },
+    ],
+  },
+  {
+    title: "Support & Settings",
+    nav: [
+      {
+        title: "Profile",
+        href: "/doctor/dashboard/profile",
+        iconName: "ProfileShield",
+      },
+      {
+        title: "Helpline",
+        href: "/doctor/dashboard/helpline",
+        iconName: "PhoneCall",
       },
     ],
   },

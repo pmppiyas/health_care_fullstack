@@ -3,6 +3,7 @@ import {
   LoginRequest,
   LoginResponse,
   LogoutResponse,
+  AuthUserProfile,
 } from "@/interfaces/auth.interface"
 import { baseApi } from "@/redux/baseApi"
 
@@ -17,12 +18,13 @@ export const authApi = baseApi.injectEndpoints({
       invalidatesTags: ["AUTH"],
     }),
 
-    getMe: builder.query<GetMeResponse, void>({
+    getMe: builder.query<AuthUserProfile, void>({
       query: () => ({
         url: "/api/auth/me",
         method: "GET",
       }),
       providesTags: ["AUTH"],
+      transformResponse: (res: GetMeResponse) => res.data,
     }),
 
     logOut: builder.mutation<LogoutResponse, void>({
@@ -32,7 +34,22 @@ export const authApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["AUTH"],
     }),
+
+    updateProfile: builder.mutation<AuthUserProfile, any>({
+      query: (data) => ({
+        url: "/api/auth/me",
+        method: "PATCH",
+        data,
+      }),
+      invalidatesTags: ["AUTH"],
+      transformResponse: (res: GetMeResponse) => res.data,
+    }),
   }),
 })
 
-export const { useLoginMutation, useLogOutMutation, useGetMeQuery } = authApi
+export const {
+  useLoginMutation,
+  useLogOutMutation,
+  useGetMeQuery,
+  useUpdateProfileMutation,
+} = authApi

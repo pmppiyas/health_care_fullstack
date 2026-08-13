@@ -113,16 +113,22 @@ export function NavUser() {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <CircleUserRoundIcon />
+              <DropdownMenuItem
+                onClick={() => {
+                  const role = user?.role?.toLowerCase()
+                  if (role) router.push(`/${role}/dashboard/profile`)
+                }}
+                className="cursor-pointer"
+              >
+                <CircleUserRoundIcon className="mr-2 size-4" />
                 Account
               </DropdownMenuItem>
               <DropdownMenuItem>
-                <CreditCardIcon />
+                <CreditCardIcon className="mr-2 size-4" />
                 Billing
               </DropdownMenuItem>
               <DropdownMenuItem>
-                <BellIcon />
+                <BellIcon className="mr-2 size-4" />
                 Notifications
               </DropdownMenuItem>
             </DropdownMenuGroup>
@@ -135,9 +141,9 @@ export function NavUser() {
               }}
             >
               {isLoggingOut ? (
-                <Loader2 className="animate-spin" />
+                <Loader2 className="animate-spin mr-2 size-4" />
               ) : (
-                <LogOutIcon />
+                <LogOutIcon className="mr-2 size-4" />
               )}
               Log out
             </DropdownMenuItem>

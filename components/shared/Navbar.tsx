@@ -25,9 +25,9 @@ const Navbar = () => {
 
   const { data, isLoading } = useGetMeQuery()
 
-  const isLoggedIn = !!data?.data
+  const isLoggedIn = !!data
 
-  const dblink = isLoggedIn ? getDashboardRoute(data?.data?.role) : "/login"
+  const dblink = isLoggedIn ? getDashboardRoute(data?.role) : "/login"
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">

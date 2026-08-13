@@ -13,6 +13,7 @@ import {
   CalendarCheck,
   ChartNoAxesColumn,
   ChartPie,
+  CircleUserRound,
   type LucideIcon,
 } from "lucide-react"
 
@@ -37,6 +38,7 @@ const icons: Record<string, LucideIcon> = {
   CalendarCheck,
   ChartNoAxesColumn,
   ChartPie,
+  ProfileShield: CircleUserRound,
 }
 
 function routeMatches(pathname: string, href: string) {

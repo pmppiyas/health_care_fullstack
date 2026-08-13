@@ -38,6 +38,17 @@ const getMe = async (authUser: AuthUser) => {
   })
 }
 
+const updateMyProfile = async (authUser: AuthUser, data: any) => {
+  const user = await AuthService.updateMyProfile(authUser, data)
+
+  return sendResponse({
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "Profile updated successfully",
+    data: user,
+  })
+}
+
 const logoutUser = async () => {
   const response = sendResponse({
     statusCode: StatusCodes.OK,
@@ -59,5 +70,6 @@ const logoutUser = async () => {
 export const AuthController = {
   loginUser,
   getMe,
+  updateMyProfile,
   logoutUser,
 }

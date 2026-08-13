@@ -7,7 +7,7 @@ export function useMe() {
   })
 
   return {
-    me: data?.data,
+    me: data,
     loading: isLoading,
     error,
     refetch,
