@@ -9,6 +9,8 @@ import {
 import { AppError } from "@/lib/error/AppError"
 import { NextRequest } from "next/server"
 import { AppointmentStatus } from "@/interfaces/appointment.interface"
+import { AuthUser } from "@/interfaces/auth.interface"
+import { Role } from "@/app/api/user/user.interface"
 
 const createAppointment = async (payload: CreateAppointmentInput) => {
   const doctor = await Doctor.findById(payload.doctorId)
@@ -50,7 +52,7 @@ const createAppointment = async (payload: CreateAppointmentInput) => {
   return appointment
 }
 
-const getAllAppointments = async (req: NextRequest) => {
+const getAllAppointments = async (req: NextRequest, user?: AuthUser) => {
   const searchParams = req.nextUrl.searchParams
 
   const page = Math.max(Number(searchParams.get("page") ?? "1"), 1)
@@ -67,7 +69,16 @@ const getAllAppointments = async (req: NextRequest) => {
   const userIdParam = searchParams.get("userId")
 
   let resolvedDoctorId = doctorIdParam
-  if (!resolvedDoctorId && userIdParam) {
+
+  if (user && user.role === Role.DOCTOR) {
+    const doctor = await Doctor.findOne({ userId: user.id }).select("_id")
+    if (doctor) {
+      resolvedDoctorId = doctor._id.toString()
+    } else {
+      // Force no matches if doctor profile is missing
+      resolvedDoctorId = new Types.ObjectId().toString()
+    }
+  } else if (!resolvedDoctorId && userIdParam) {
     const doctor = await Doctor.findOne({ userId: userIdParam }).select("_id")
     if (doctor) {
       resolvedDoctorId = doctor._id.toString()
@@ -168,7 +179,7 @@ const getAllAppointments = async (req: NextRequest) => {
   }
 }
 
-const getAppointmentById = async (appointmentId: string) => {
+const getAppointmentById = async (appointmentId: string, user?: AuthUser) => {
   const appointment = await Appointment.findById(appointmentId)
     .populate({
       path: "doctorId",
@@ -181,6 +192,17 @@ const getAppointmentById = async (appointmentId: string) => {
 
   if (!appointment) {
     throw new AppError(404, "Appointment not found")
+  }
+
+  if (user && user.role === Role.DOCTOR) {
+    const doctor = await Doctor.findOne({ userId: user.id }).select("_id")
+    const appDoctorId = appointment.doctorId?._id 
+      ? appointment.doctorId._id.toString() 
+      : appointment.doctorId.toString()
+
+    if (!doctor || appDoctorId !== doctor._id.toString()) {
+      throw new AppError(403, "You are not authorized to view this appointment")
+    }
   }
 
   return appointment

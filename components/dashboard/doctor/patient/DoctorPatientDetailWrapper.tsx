@@ -1,5 +1,6 @@
 "use client"
 
+import { useState } from "react"
 import { useRouter } from "next/navigation"
 import {
   ArrowLeft,
@@ -24,7 +25,11 @@ import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
 
 import { useGetPATIENTByIdQuery } from "@/redux/features/patient.api"
+import { useGetPrescriptionsQuery } from "@/redux/features/prescription.api"
 import { PatientStatus, Gender } from "@/app/api/patient/patient.interface"
+import PrescriptionModal from "../../shared/prescription/PrescriptionModal"
+import Link from "next/link"
+import { FileText } from "lucide-react"
 
 function formatDate(date?: Date | string) {
   if (!date) return "—"
@@ -145,8 +150,13 @@ export default function DoctorPatientDetailWrapper({
   patientId,
 }: DoctorPatientDetailWrapperProps) {
   const router = useRouter()
-
   const { data, isLoading, isError } = useGetPATIENTByIdQuery(patientId)
+  const { data: prescriptionsData } = useGetPrescriptionsQuery(
+    { patientId },
+    { skip: !patientId }
+  )
+
+  const [isPrescriptionModalOpen, setPrescriptionModalOpen] = useState(false)
 
   const patient = data?.data
 
@@ -195,6 +205,17 @@ export default function DoctorPatientDetailWrapper({
             <ArrowLeft className="size-4" />
             Back
           </Button>
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setPrescriptionModalOpen(true)}
+              className="gap-2 border-primary/30 text-primary hover:bg-primary/10"
+            >
+              <FileText className="size-4" />
+              Create Prescription
+            </Button>
+          </div>
         </div>
 
         {/* ── hero card ───────────────────────────────────────────────────── */}
@@ -281,82 +302,82 @@ export default function DoctorPatientDetailWrapper({
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {patient.phone && (
             <InfoCard
-               icon={<Phone className="size-4" />}
-               label="Phone"
-               value={patient.phone}
+              icon={<Phone className="size-4" />}
+              label="Phone"
+              value={patient.phone}
             />
           )}
 
           {patient.email && (
             <InfoCard
-               icon={<Mail className="size-4" />}
-               label="Email"
-               value={
-                 <a
-                   href={`mailto:${patient.email}`}
-                   className="text-primary hover:underline"
-                 >
-                   {patient.email}
-                 </a>
-               }
+              icon={<Mail className="size-4" />}
+              label="Email"
+              value={
+                <a
+                  href={`mailto:${patient.email}`}
+                  className="text-primary hover:underline"
+                >
+                  {patient.email}
+                </a>
+              }
             />
           )}
 
           {patient.address && (
             <InfoCard
-               icon={<MapPin className="size-4" />}
-               label="Address"
-               value={patient.address}
+              icon={<MapPin className="size-4" />}
+              label="Address"
+              value={patient.address}
             />
           )}
 
           <InfoCard
-             icon={<CalendarClock className="size-4" />}
-             label="Admission Date"
-             value={formatDate(patient.admissionDate)}
-             accent
+            icon={<CalendarClock className="size-4" />}
+            label="Admission Date"
+            value={formatDate(patient.admissionDate)}
+            accent
           />
 
           {patient.dischargeDate && (
             <InfoCard
-               icon={<CalendarCheck className="size-4" />}
-               label="Discharge Date"
-               value={formatDate(patient.dischargeDate)}
+              icon={<CalendarCheck className="size-4" />}
+              label="Discharge Date"
+              value={formatDate(patient.dischargeDate)}
             />
           )}
 
           {patient.diagnosis && (
             <InfoCard
-               icon={<Stethoscope className="size-4" />}
-               label="Diagnosis"
-               value={patient.diagnosis}
-               wide
+              icon={<Stethoscope className="size-4" />}
+              label="Diagnosis"
+              value={patient.diagnosis}
+              wide
             />
           )}
 
           {(patient.allergies?.length ?? 0) > 0 && (
             <InfoCard
-               icon={<AlertTriangle className="size-4" />}
-               label="Allergies"
-               value={<TagList items={patient.allergies} />}
+              icon={<AlertTriangle className="size-4" />}
+              label="Allergies"
+              value={<TagList items={patient.allergies} />}
             />
           )}
 
           {(patient.currentMedications?.length ?? 0) > 0 && (
             <InfoCard
-               icon={<Pill className="size-4" />}
-               label="Current Medications"
-               value={<TagList items={patient.currentMedications} />}
+              icon={<Pill className="size-4" />}
+              label="Current Medications"
+              value={<TagList items={patient.currentMedications} />}
             />
           )}
 
           {(patient as unknown as { createdAt?: string }).createdAt && (
             <InfoCard
-               icon={<CalendarClock className="size-4" />}
-               label="Registered On"
-               value={formatDate(
-                 (patient as unknown as { createdAt: string }).createdAt
-               )}
+              icon={<CalendarClock className="size-4" />}
+              label="Registered On"
+              value={formatDate(
+                (patient as unknown as { createdAt: string }).createdAt
+              )}
             />
           )}
         </div>
@@ -420,6 +441,46 @@ export default function DoctorPatientDetailWrapper({
           </div>
         )}
       </div>
+
+      {/* ── Prescription History ───────────────────────────────────────── */}
+      {prescriptionsData?.data && prescriptionsData.data.length > 0 && (
+        <div className="mt-8 space-y-4">
+          <h3 className="text-lg font-semibold tracking-tight">
+            Prescription History
+          </h3>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {prescriptionsData.data.map((presc: any) => (
+              <div
+                key={presc._id}
+                className="rounded-lg border bg-card p-4 shadow-sm transition hover:shadow-md"
+              >
+                <div className="mb-2 flex items-start justify-between">
+                  <h4 className="font-semibold text-primary">
+                    {presc.diagnosis}
+                  </h4>
+                  <span className="text-xs text-muted-foreground">
+                    {new Date(presc.createdAt).toLocaleDateString()}
+                  </span>
+                </div>
+                <p className="mb-4 text-sm text-muted-foreground">
+                  {presc.medicines?.length} medicines prescribed
+                </p>
+                <Link href={`/doctor/dashboard/prescriptions/${presc._id}`}>
+                  <Button variant="outline" size="sm" className="w-full">
+                    View Prescription
+                  </Button>
+                </Link>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <PrescriptionModal
+        isOpen={isPrescriptionModalOpen}
+        onClose={() => setPrescriptionModalOpen(false)}
+        patientId={patientId}
+      />
     </>
   )
 }

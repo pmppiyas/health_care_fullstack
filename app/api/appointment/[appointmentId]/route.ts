@@ -17,10 +17,10 @@ type RouteContext = {
 export const GET = withAuth(
   Role.ADMIN,
   Role.DOCTOR
-)(async (req, context) => {
+)(async (req, context, user) => {
   const { appointmentId } = await context.params
 
-  return AppointmentController.getAppointmentById(req, appointmentId)
+  return AppointmentController.getAppointmentById(req, appointmentId, user)
 })
 
 export const PATCH = withAuthAndValidation(

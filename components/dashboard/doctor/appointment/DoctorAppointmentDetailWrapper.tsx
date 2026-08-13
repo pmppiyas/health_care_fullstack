@@ -30,6 +30,10 @@ import {
   useCancelAppointmentMutation,
 } from "@/redux/features/appointment.api"
 
+import { useGetPrescriptionsQuery } from "@/redux/features/prescription.api"
+import PrescriptionModal from "../../shared/prescription/PrescriptionModal"
+import Link from "next/link"
+
 import {
   AppointmentStatus,
   AppointmentType,
@@ -138,6 +142,13 @@ export default function DoctorAppointmentDetailWrapper({
 
   const [showDelete, setShowDelete] = useState(false)
   const [showCancel, setShowCancel] = useState(false)
+  const [isPrescriptionModalOpen, setPrescriptionModalOpen] = useState(false)
+
+  const { data: prescriptionsData } = useGetPrescriptionsQuery(
+    { appointmentId },
+    { skip: !appointmentId }
+  )
+
 
   if (isLoading) return <AppointmentDetailSkeleton />
 
@@ -241,15 +252,11 @@ export default function DoctorAppointmentDetailWrapper({
             <Button
               variant="outline"
               size="sm"
-              onClick={() =>
-                router.push(
-                  `/doctor/dashboard/appointments/${appointment._id}/edit`
-                )
-              }
-              className="gap-2"
+              onClick={() => setPrescriptionModalOpen(true)}
+              className="gap-2 text-primary border-primary/30 hover:bg-primary/10"
             >
-              <Pencil className="size-4" />
-              Edit
+              <FileText className="size-4" />
+              Prescribe
             </Button>
 
             {isCancellable && (
@@ -263,16 +270,6 @@ export default function DoctorAppointmentDetailWrapper({
                 Cancel
               </Button>
             )}
-
-            <Button
-              variant="destructive"
-              size="sm"
-              onClick={() => setShowDelete(true)}
-              className="gap-2"
-            >
-              <Trash2 className="size-4" />
-              Delete
-            </Button>
           </div>
         </div>
 
@@ -460,7 +457,37 @@ export default function DoctorAppointmentDetailWrapper({
             />
           )}
         </div>
+
+        {/* Prescriptions List Section */}
+        {prescriptionsData?.data && prescriptionsData.data.length > 0 && (
+          <div className="mt-8 space-y-4">
+            <h3 className="text-lg font-semibold tracking-tight">Prescriptions for this Appointment</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {prescriptionsData.data.map((presc: any) => (
+                <div key={presc._id} className="p-4 border rounded-lg bg-card shadow-sm hover:shadow-md transition">
+                  <div className="flex justify-between items-start mb-2">
+                    <h4 className="font-semibold text-primary">{presc.diagnosis}</h4>
+                    <span className="text-xs text-muted-foreground">{new Date(presc.createdAt).toLocaleDateString()}</span>
+                  </div>
+                  <p className="text-sm text-muted-foreground mb-4">{presc.medicines?.length} medicines prescribed</p>
+                  <Link href={`/doctor/dashboard/prescriptions/${presc._id}`}>
+                    <Button variant="outline" size="sm" className="w-full">
+                      View Prescription
+                    </Button>
+                  </Link>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
+
+      <PrescriptionModal
+        isOpen={isPrescriptionModalOpen}
+        onClose={() => setPrescriptionModalOpen(false)}
+        patientId={patient?._id}
+        appointmentId={appointmentId}
+      />
 
       <ConfirmModal
         open={showDelete}

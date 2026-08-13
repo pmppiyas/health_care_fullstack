@@ -14,6 +14,8 @@ import {
   ChartNoAxesColumn,
   ChartPie,
   CircleUserRound,
+  ClipboardList,
+  FileText,
   type LucideIcon,
 } from "lucide-react"
 
@@ -39,6 +41,8 @@ const icons: Record<string, LucideIcon> = {
   ChartNoAxesColumn,
   ChartPie,
   ProfileShield: CircleUserRound,
+  ClipboardList,
+  FileText,
 }
 
 function routeMatches(pathname: string, href: string) {

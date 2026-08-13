@@ -13,6 +13,7 @@ export const baseApi = createApi({
     "APPOINTMENT",
     "DASHBOARD",
     "DOCTOR_PATIENT",
+    "PRESCRIPTION",
   ],
   endpoints: () => ({}),
 })

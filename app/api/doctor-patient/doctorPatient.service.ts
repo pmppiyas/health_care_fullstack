@@ -2,6 +2,7 @@ import mongoose, { Types } from "mongoose"
 import DoctorPatient from "./doctorPatient.model"
 import Doctor from "../doctor/doctor.model"
 import Patient from "../patient/patient.model"
+import Appointment from "../appointment/appointment.model"
 import {
   CreateDoctorPatientInput,
   UpdateDoctorPatientInput,
@@ -79,9 +80,15 @@ const getPatientsByDoctor = async (doctorId: string, query?: { search?: string; 
   const search = query?.search?.trim()
 
   const assignments = await DoctorPatient.find({ doctorId }).lean()
-  const patientIds = assignments.map(a => a.patientId)
+  const assignedPatientIds = assignments.map(a => a.patientId.toString())
 
-  const patientQuery: any = { _id: { $in: patientIds } }
+  const appointmentPatients = await Appointment.find({ doctorId }).distinct("patientId")
+  const appointmentPatientIds = appointmentPatients.map(id => id.toString())
+
+  const allPatientIdStrings = Array.from(new Set([...assignedPatientIds, ...appointmentPatientIds]))
+  const allPatientIds = allPatientIdStrings.map(id => new Types.ObjectId(id))
+
+  const patientQuery: any = { _id: { $in: allPatientIds } }
   
   if (search) {
     patientQuery.$or = [

@@ -1,5 +1,6 @@
 import { NextRequest } from "next/server"
 import { StatusCodes } from "http-status-codes"
+import { AuthUser } from "@/interfaces/auth.interface"
 
 import {
   CreateAppointmentInput,
@@ -20,8 +21,8 @@ const createAppointment = async (data: CreateAppointmentInput) => {
   })
 }
 
-const getAllAppointments = async (req: NextRequest) => {
-  const result = await AppointmentService.getAllAppointments(req)
+const getAllAppointments = async (req: NextRequest, user?: AuthUser) => {
+  const result = await AppointmentService.getAllAppointments(req, user)
 
   return sendResponse({
     statusCode: StatusCodes.OK,
@@ -32,8 +33,8 @@ const getAllAppointments = async (req: NextRequest) => {
   })
 }
 
-const getAppointmentById = async (req: NextRequest, appointmentId: string) => {
-  const appointment = await AppointmentService.getAppointmentById(appointmentId)
+const getAppointmentById = async (req: NextRequest, appointmentId: string, user?: AuthUser) => {
+  const appointment = await AppointmentService.getAppointmentById(appointmentId, user)
 
   return sendResponse({
     statusCode: StatusCodes.OK,

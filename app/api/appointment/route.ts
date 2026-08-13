@@ -20,5 +20,5 @@ export const GET = withAuth(
   Role.ADMIN,
   Role.DOCTOR
 )(async (req: NextRequest, context, user) => {
-  return await AppointmentController.getAllAppointments(req)
+  return await AppointmentController.getAllAppointments(req, user)
 })

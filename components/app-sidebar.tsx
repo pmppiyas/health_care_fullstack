@@ -40,7 +40,6 @@ function SidebarSkeleton() {
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  // Trigger getMe to hydrate auth state on mount / refresh
   const { isLoading: isMeLoading } = useGetMeQuery()
   const user = useAppSelector((state) => state.auth.user)
 

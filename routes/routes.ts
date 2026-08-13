@@ -110,6 +110,23 @@ export const doctorRoutes: RouteSection[] = [
       },
     ],
   },
+
+  {
+    title: "Medical",
+    nav: [
+      {
+        title: "Patient Records",
+        href: "/doctor/dashboard/patient-records",
+        iconName: "ClipboardList",
+      },
+      {
+        title: "Prescriptions",
+        href: "/doctor/dashboard/prescriptions",
+        iconName: "FileText",
+      },
+    ],
+  },
+
   {
     title: "Support & Settings",
     nav: [

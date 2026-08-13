@@ -7,8 +7,6 @@ import {
   User,
   Shield,
   Phone,
-  Building2,
-  Stethoscope,
   FileText,
   Lock,
   Camera,

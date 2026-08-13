@@ -181,14 +181,6 @@ export const getDoctorAppointmentColumns = ({
             View
           </DropdownMenuItem>
 
-          <DropdownMenuItem
-            className="cursor-pointer gap-2"
-            onClick={(e) => { e.stopPropagation(); onEdit(row) }}
-          >
-            <Pencil className="size-3.5" />
-            Edit
-          </DropdownMenuItem>
-
           {row.status !== AppointmentStatus.CANCELLED &&
             row.status !== AppointmentStatus.COMPLETED && (
               <DropdownMenuItem
@@ -199,16 +191,6 @@ export const getDoctorAppointmentColumns = ({
                 Cancel
               </DropdownMenuItem>
             )}
-
-          <DropdownMenuSeparator />
-
-          <DropdownMenuItem
-            className="cursor-pointer gap-2 text-destructive focus:bg-destructive/10 focus:text-destructive"
-            onClick={(e) => { e.stopPropagation(); onDelete(row) }}
-          >
-            <Trash2 className="size-3.5" />
-            Delete
-          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     ),
